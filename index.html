@@ -7,6 +7,7 @@
     <!-- Firebase (compat SDK — works with plain <script> tags, no build step needed) -->
     <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -561,12 +562,15 @@
     /* ══════════════ FIREBASE SETUP ══════════════
        1. Go to https://console.firebase.google.com → create a project.
        2. Build → Firestore Database → Create database (start in production mode) → pick a region.
-       3. Project settings (gear icon) → General → "Your apps" → Add app → Web (</>) → register the app.
-       4. Copy the firebaseConfig object shown there and paste its values below.
-       5. In Firestore → Rules, paste the rules from the message this file was delivered with,
+       3. Build → Authentication → Get started → Sign-in method tab → enable "Email/Password".
+          (This app signs people in with Firebase Auth behind the scenes, using their phone
+          number as the identifier — no real email is ever sent or needed.)
+       4. Project settings (gear icon) → General → "Your apps" → Add app → Web (</>) → register the app.
+       5. Copy the firebaseConfig object shown there and paste its values below.
+       6. In Firestore → Rules, paste the rules from the message this file was delivered with,
           then click Publish.
-       6. Once deployed (e.g. on Cloudflare Pages), add that live domain under
-          Authentication → Settings → Authorized domains (only needed if you add Firebase Auth later). */
+       7. Once deployed (e.g. on Netlify/Cloudflare), add that live domain under
+          Authentication → Settings → Authorized domains. */
     const firebaseConfig = {
         apiKey: "YOUR_API_KEY",
         authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
@@ -577,6 +581,10 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
+    const auth = firebase.auth();
+    // Firebase Auth needs a real-looking email — we build a fake one from role+phone so the
+    // UI can keep asking for "phone" and "password" exactly as before.
+    function authEmailFor(role, phone) { return `${role}_${phone}@mybook.local`; }
 
     /* In-memory caches kept live by Firestore onSnapshot listeners.
        Reads (getUsers/getCustData/getMerchData) stay synchronous, reading from these
@@ -645,10 +653,6 @@
         return chars.join('');
     }
     function getUsers() { return USERS_CACHE; }
-    function saveUserDoc(id, userObj) {
-        USERS_CACHE[id] = userObj;
-        db.collection('users').doc(id).set(userObj).catch(err => console.error('Firestore write failed (users):', err));
-    }
     function getCustData(custId) { return CUST_CACHE[custId] || {codes:{}, history:[]}; }
     function saveCustData(custId, d) {
         CUST_CACHE[custId] = d;
@@ -702,15 +706,27 @@
         if (pass.length < 6)              { flash('registerMsg','err','⚠️ Password must be at least 6 characters.'); return; }
         const users = getUsers();
         // allow same phone for different roles
-        const userId = `${selectedRole}_${phone}`;
-        if (users[userId]) { flash('registerMsg','err','⚠️ Account already exists.'); return; }
-        const newUser = { id:userId, name, phone, password:pass, role:selectedRole, createdAt:new Date().toISOString() };
-        saveUserDoc(userId, newUser);
-        flash('registerMsg','ok','✅ Account created! Please login.');
-        setTimeout(()=>{
-            goToLogin();
-            ['regName','regPhone','regPass','regPassC'].forEach(id=>document.getElementById(id).value='');
-        }, 1400);
+        if (Object.values(users).some(u => u.phone===phone && u.role===selectedRole)) {
+            flash('registerMsg','err','⚠️ Account already exists.'); return;
+        }
+        const role = selectedRole;
+        auth.createUserWithEmailAndPassword(authEmailFor(role, phone), pass).then(cred => {
+            const userId = cred.user.uid;
+            const newUser = { id:userId, name, phone, role, createdAt:new Date().toISOString() };
+            return db.collection('users').doc(userId).set(newUser).then(() => {
+                USERS_CACHE[userId] = newUser;
+                return auth.signOut(); // land back on login, matching the previous flow
+            });
+        }).then(() => {
+            flash('registerMsg','ok','✅ Account created! Please login.');
+            setTimeout(()=>{
+                goToLogin();
+                ['regName','regPhone','regPass','regPassC'].forEach(id=>document.getElementById(id).value='');
+            }, 1400);
+        }).catch(err => {
+            if (err.code === 'auth/email-already-in-use') flash('registerMsg','err','⚠️ Account already exists.');
+            else flash('registerMsg','err','⚠️ '+err.message);
+        });
     }
 
     /* ── login ── */
@@ -718,22 +734,26 @@
         const phone = document.getElementById('loginPhone').value.trim();
         const pass  = document.getElementById('loginPassword').value;
         if (!phone||!pass) { flash('loginMsg','err','⚠️ Enter phone and password.'); return; }
-        const users = getUsers();
-        const found = Object.values(users).find(u => u.phone===phone && u.password===pass);
-        if (!found) { flash('loginMsg','err','❌ Phone or password is incorrect.'); return; }
-        currentUser = found.id;
-        selectedRole = found.role;
-        localStorage.setItem('mb_session', currentUser);
-        if (selectedRole==='customer') showCustomerPage();
-        else showMerchantPage();
-        document.getElementById('loginPhone').value='';
-        document.getElementById('loginPassword').value='';
+        // Try both roles' auth email for this phone — the form doesn't ask which role, same as before.
+        auth.signInWithEmailAndPassword(authEmailFor('customer', phone), pass)
+            .catch(() => auth.signInWithEmailAndPassword(authEmailFor('merchant', phone), pass))
+            .then(cred => {
+                currentUser = cred.user.uid;
+                const u = getUsers()[currentUser];
+                selectedRole = u ? u.role : 'customer';
+                if (selectedRole==='customer') showCustomerPage();
+                else showMerchantPage();
+                document.getElementById('loginPhone').value='';
+                document.getElementById('loginPassword').value='';
+            }).catch(() => {
+                flash('loginMsg','err','❌ Phone or password is incorrect.');
+            });
     }
 
     /* ── logout ── */
     function logout() {
+        auth.signOut();
         currentUser=null; selectedMerchantId=null;
-        localStorage.removeItem('mb_session');
         document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
         document.getElementById('loginPage').classList.add('active');
     }
@@ -1061,13 +1081,15 @@
         const newP = document.getElementById('newPass').value;
         if (!oldP||!newP) { flash('changePassMsg','err','⚠️ Both fields are required.'); return; }
         if (newP.length<6) { flash('changePassMsg','err','⚠️ New password must be at least 6 characters.'); return; }
-        const users = getUsers();
-        if (users[currentUser].password!==oldP) { flash('changePassMsg','err','❌ Current password is incorrect.'); return; }
-        const updatedUser = { ...users[currentUser], password:newP };
-        saveUserDoc(currentUser, updatedUser);
-        flash('changePassMsg','ok','✅ Password changed successfully!', 3000);
-        document.getElementById('oldPass').value='';
-        document.getElementById('newPass').value='';
+        const user = auth.currentUser;
+        const cred = firebase.auth.EmailAuthProvider.credential(user.email, oldP);
+        user.reauthenticateWithCredential(cred).then(() => user.updatePassword(newP)).then(() => {
+            flash('changePassMsg','ok','✅ Password changed successfully!', 3000);
+            document.getElementById('oldPass').value='';
+            document.getElementById('newPass').value='';
+        }).catch(() => {
+            flash('changePassMsg','err','❌ Current password is incorrect.');
+        });
     }
 
     /* ═══════════════ MERCHANT ═══════════════ */
@@ -1281,11 +1303,14 @@
     window.addEventListener('load', () => {
         initFirebaseSync().then(() => {
             document.getElementById('fbLoadingOverlay').style.display = 'none';
-            const s = localStorage.getItem('mb_session');
-            if (s) {
-                const u = getUsers()[s];
-                if (u) { currentUser=s; selectedRole=u.role; if(u.role==='customer') showCustomerPage(); else showMerchantPage(); }
-            }
+            // Firebase Auth remembers the signed-in user across reloads on its own.
+            auth.onAuthStateChanged(user => {
+                if (user) {
+                    currentUser = user.uid;
+                    const u = getUsers()[currentUser];
+                    if (u) { selectedRole=u.role; if(u.role==='customer') showCustomerPage(); else showMerchantPage(); }
+                }
+            });
         });
     });
 </script>
