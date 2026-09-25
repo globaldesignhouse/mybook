@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MyBook - Code Redemption</title>
-    <!-- Firebase (compat SDK — works with plain <script> tags, no build step needed) -->
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/11.10.0/firebase-auth-compat.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -150,24 +146,6 @@
         .r-badge { display: inline-block; background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; border-radius: 6px; padding: 1px 7px; font-size: 11px; font-weight: 600; margin-left: 6px; }
         .r-meta { font-size: 12px; color: #999; margin-top: 3px; display: flex; justify-content: space-between; }
         .list-empty { padding: 20px; text-align: center; color: #bbb; font-size: 13px; }
-        /* Redemption cards (My Redemptions style) */
-        .redemption-list { max-height: 420px; overflow-y: auto; }
-        .redemption-date-header { font-size: 13px; font-weight: 700; color: #333; margin: 16px 0 10px; }
-        .redemption-date-header:first-child { margin-top: 2px; }
-        .redemption-card { display: flex; align-items: flex-start; gap: 13px; background: #fff; border: 1px solid #eee; border-radius: 14px; padding: 14px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .redemption-logo { width: 54px; height: 54px; border-radius: 12px; background: #f3e6d8; color: #8a5a2b; font-size: 20px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
-        .redemption-logo img { width: 100%; height: 100%; object-fit: cover; }
-        .redemption-body { flex: 1; min-width: 0; }
-        .redemption-title { font-size: 13.5px; font-weight: 700; color: #222; line-height: 1.35; margin-bottom: 8px; }
-        .redemption-badge { display: inline-block; border-radius: 6px; padding: 3px 10px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px; margin-bottom: 8px; }
-        .redemption-store { font-size: 12px; color: #888; }
-        .redemption-share { display: flex; flex-direction: column; align-items: center; gap: 2px; color: #ec1362; font-size: 11px; font-weight: 600; cursor: pointer; flex-shrink: 0; white-space: nowrap; }
-        .redemption-share .share-icon { font-size: 15px; }
-        /* Firebase connect/loading overlay */
-        .fb-loading-overlay { position: fixed; inset: 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; z-index: 9999; color: #fff; }
-        .fb-loading-box { text-align: center; font-size: 14px; font-weight: 600; }
-        .fb-spinner { width: 34px; height: 34px; border: 3px solid rgba(255,255,255,0.35); border-top-color: #fff; border-radius: 50%; margin: 0 auto 12px; animation: fb-spin 0.8s linear infinite; }
-        @keyframes fb-spin { to { transform: rotate(360deg); } }
         /* Merchant selector for customer */
         .merchant-list { max-height: 220px; overflow-y: auto; }
         .merchant-option {
@@ -204,69 +182,9 @@
         .popup-code { font-size:22px; font-weight:800; color:#111; font-family:'Courier New',monospace; letter-spacing:3px; margin-top:6px; }
         .popup-done { width:100%; margin-top:28px; padding:16px; background:#e53935; color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; letter-spacing:1px; }
         .popup-done:hover { background:#c62828; }
-
-        /* ═══ Offer management (merchant) ═══ */
-        .offer-type-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
-        .offer-type-btn { flex:1; min-width:90px; padding:12px 8px; border:2px solid #e0e7ff; background:white; border-radius:12px; cursor:pointer; font-size:12px; font-weight:600; color:#555; text-align:center; }
-        .offer-type-btn:hover { border-color:#ec1362; }
-        .offer-type-btn.active { background:#ec1362; border-color:#ec1362; color:white; }
-        .offer-manage-item { background:white; border:1px solid #eee; border-radius:12px; padding:12px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
-        .offer-manage-item .om-title { font-weight:700; color:#333; font-size:14px; }
-        .offer-manage-item .om-sub { font-size:12px; color:#999; margin-top:2px; }
-        .offer-del-btn { background:#ffebee; color:#c62828; border:1px solid #ef9a9a; border-radius:8px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:700; }
-        .checkbox-row { display:flex; gap:18px; margin-bottom:14px; }
-        .checkbox-row label { display:flex; align-items:center; gap:6px; font-weight:600; font-size:13px; color:#444; }
-        .checkbox-row input { width:auto; }
-
-        /* ═══ Customer offer list ═══ */
-        .offer-card { background:white; border:2px solid #e0e7ff; border-radius:14px; padding:16px; margin-bottom:12px; cursor:pointer; transition:all .2s; }
-        .offer-card:hover { border-color:#ec1362; background:#fff5f8; }
-        .offer-card .oc-tag { display:inline-block; background:#ffb300; color:white; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; margin-bottom:8px; }
-        .offer-card .oc-title { font-size:18px; font-weight:800; color:#ec1362; margin-bottom:6px; }
-        .offer-card .oc-desc { font-size:13px; color:#777; }
-
-        /* ═══ Customer offer detail (Batteel-style) ═══ */
-        #offerDetailPanel { display:none; }
-        .od-header { background:#ec1362; margin:-36px -36px 0; padding:20px 20px; display:flex; align-items:center; gap:16px; color:white; }
-        .od-back { background:none; border:none; color:white; font-size:22px; cursor:pointer; line-height:1; }
-        .od-header-title { font-size:17px; font-weight:800; }
-        .od-body { padding:28px 4px 10px; text-align:center; }
-        .od-logo { width:64px; height:64px; border-radius:50%; background:#f3e6d8; color:#8a5a2b; font-size:26px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
-        .od-merchant-link { color:#29b6f6; font-weight:700; font-size:15px; text-decoration:underline; cursor:pointer; margin-bottom:18px; }
-        .od-tag { display:inline-block; background:#ffb300; color:white; font-size:12px; font-weight:800; padding:5px 16px; border-radius:20px; margin-bottom:14px; letter-spacing:.5px; }
-        .od-title { font-size:32px; font-weight:800; color:#ec1362; margin-bottom:10px; }
-        .od-save { font-size:17px; font-weight:700; color:#29b6f6; margin-bottom:16px; }
-        .od-desc { font-size:15px; color:#333; line-height:1.5; margin-bottom:20px; }
-        .od-pin-note { font-size:13px; color:#888; margin-bottom:14px; }
-        .od-pin-row { display:flex; gap:12px; justify-content:center; margin-bottom:22px; }
-        .od-pin-box { width:52px; height:60px; border:2px solid #ccc; border-radius:12px; font-size:24px; text-align:center; font-weight:700; }
-        .od-pin-box:focus { outline:none; border-color:#ec1362; }
-        .od-redeem-btn { width:100%; padding:16px; background:#ec1362; color:white; border:none; border-radius:12px; font-size:16px; font-weight:800; letter-spacing:1px; cursor:pointer; margin-bottom:16px; }
-        .od-redeem-btn:hover { background:#c81050; }
-        .od-report-btn { display:inline-block; background:none; border:2px solid #f0c2d4; color:#ec1362; border-radius:20px; padding:8px 18px; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:22px; }
-        .od-icons-row { display:flex; justify-content:center; gap:32px; margin-bottom:22px; font-size:14px; color:#555; }
-        .od-fav-share { display:flex; justify-content:center; gap:48px; margin-bottom:20px; }
-        .od-fav-share div { text-align:center; cursor:pointer; }
-        .od-fav-share .icon { font-size:22px; color:#ec1362; }
-        .od-fav-share.active-fav .icon.heart { color:#ec1362; }
-        .od-fav-share span { display:block; font-size:12px; color:#29b6f6; font-weight:700; margin-top:2px; }
-        .od-valid { font-size:13px; color:#555; margin-bottom:8px; }
-        .od-rules { font-size:13px; color:#555; }
-        .od-rules b { color:#ec1362; cursor:pointer; }
-        .logo-upload-row { display:flex; align-items:center; gap:16px; }
-        .logo-preview { width:64px; height:64px; border-radius:50%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:26px; overflow:hidden; flex-shrink:0; border:2px solid #e0e7ff; }
-        .logo-preview img { width:100%; height:100%; object-fit:cover; }
-        .od-logo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
     </style>
 </head>
 <body>
-<div class="fb-loading-overlay" id="fbLoadingOverlay">
-    <div class="fb-loading-box">
-        <div class="fb-spinner" id="fbSpinner"></div>
-        <div id="fbLoadingText">Connecting…</div>
-        <div id="fbErrorBox" style="display:none;margin-top:16px;max-width:320px;background:rgba(0,0,0,0.35);border-radius:10px;padding:14px;font-size:12px;text-align:left;word-break:break-word;line-height:1.5;"></div>
-    </div>
-</div>
 <div class="container">
     <div class="app-header">
         <div class="logo">MyBook</div>
@@ -318,58 +236,22 @@
 
             <!-- Step 1: Choose merchant -->
             <div id="custStep1">
-                <div class="info">Select a merchant, then pick an offer to redeem.</div>
+                <div class="info">Select a merchant and enter their PIN to generate or redeem your code.</div>
                 <div class="card">
                     <div class="card-title">🏪 Select Merchant</div>
                     <div class="merchant-list" id="merchantList">
                         <div class="list-empty">No merchants registered yet.</div>
                     </div>
                 </div>
-                <div id="custOfferListSection" style="display:none;">
+                <div id="custPinSection" style="display:none;">
                     <div class="card">
-                        <div class="card-title" id="offerListMerchantName">🎁 Available Offers</div>
-                        <div id="custOfferList"><div class="list-empty">No offers available yet.</div></div>
+                        <div class="card-title">🔐 Enter Merchant PIN</div>
+                        <div class="inp-row">
+                            <input type="password" id="custPin" placeholder="4-digit PIN" maxlength="4" />
+                            <button onclick="verifyMerchantPin()">Verify</button>
+                        </div>
+                        <div id="custPinMsg"></div>
                     </div>
-                    <div style="text-align:center;margin-top:10px;">
-                        <a style="font-size:13px;color:#667eea;cursor:pointer;font-weight:600;" onclick="switchMerchant()">← Choose a different merchant</a>
-                        &nbsp;·&nbsp;
-                        <a style="font-size:13px;color:#667eea;cursor:pointer;font-weight:600;" onclick="openAccountFromOffers()">My Account / History →</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Offer detail (Batteel-style) -->
-            <div id="offerDetailPanel">
-                <div class="od-header">
-                    <button class="od-back" onclick="backToOfferList()">←</button>
-                    <div class="od-header-title" id="odHeaderMerchant">Merchant</div>
-                </div>
-                <div class="od-body">
-                    <div class="od-logo" id="odLogo">M</div>
-                    <div class="od-merchant-link" onclick="backToOfferList()" id="odMerchantLink">Merchant Name ⌄</div>
-                    <div class="od-tag" id="odTag">B1G1 FREE</div>
-                    <div class="od-title" id="odTitle">Offer</div>
-                    <div class="od-save" id="odSave">You will save 0</div>
-                    <div class="od-desc" id="odDesc">Description</div>
-                    <div class="od-pin-note" id="odRemaining">6/6 redemptions left</div>
-                    <div class="od-pin-note" id="odPinNote">Please ask Merchant to enter its PIN</div>
-                    <div class="od-pin-row">
-                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
-                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
-                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
-                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
-                    </div>
-                    <input type="hidden" id="offerRedeemPin" />
-                    <button class="od-redeem-btn" onclick="redeemCode('offerRedeemPin','offerRedeemMsg')">REDEEM</button>
-                    <div id="offerRedeemMsg"></div>
-                    <div><button class="od-report-btn" onclick="reportIssue()">Report an issue</button></div>
-                    <div class="od-icons-row" id="odIconsRow"></div>
-                    <div class="od-fav-share">
-                        <div onclick="toggleFavorite()"><span class="icon heart" id="odFavIcon">♡</span><span>Favorite</span></div>
-                        <div onclick="shareOffer()"><span class="icon">⇗</span><span>Share</span></div>
-                    </div>
-                    <div class="od-valid" id="odValid">Valid till —</div>
-                    <div class="od-rules">Offers are subjected to <b onclick="alert('Standard offer rules apply.')">Rules of Use</b></div>
                 </div>
             </div>
 
@@ -406,7 +288,7 @@
                 <div id="custHistTab" class="tab-panel">
                     <div class="card">
                         <div class="card-title">📜 Redeemed Codes History</div>
-                        <div class="redemption-list" id="custHistory">
+                        <div class="scroll-list" id="custHistory">
                             <div class="list-empty">No codes redeemed yet.</div>
                         </div>
                     </div>
@@ -432,21 +314,6 @@
             </div>
             <div style="text-align:center;margin-bottom:16px;color:#777;font-size:13px;" id="merchWelcome"></div>
 
-            <div class="card" style="text-align:center;">
-                <div class="card-title" style="text-align:left;">🖼️ Store Logo</div>
-                <div class="logo-upload-row">
-                    <div class="logo-preview" id="mLogoPreview">🏪</div>
-                    <div style="flex:1;text-align:left;">
-                        <input type="file" id="mLogoFile" accept="image/*" onchange="previewMerchantLogo()" />
-                        <div style="margin-top:8px;">
-                            <button class="btn-sm" style="background:#667eea;" onclick="saveMerchantLogo()">Save Logo</button>
-                            <button class="btn-sm" style="background:#aaa;" onclick="removeMerchantLogo()">Remove</button>
-                        </div>
-                        <div id="mLogoMsg" style="margin-top:8px;"></div>
-                    </div>
-                </div>
-            </div>
-
             <div class="stats">
                 <div class="stat-card">
                     <div class="s-label">Total Customers</div>
@@ -460,8 +327,7 @@
 
             <div class="tab-bar">
                 <button class="tab-btn active" onclick="merchTab('mPinTab',0)">🔐 PIN</button>
-                <button class="tab-btn" onclick="merchTab('mOffersTab',1)">🎁 Offers</button>
-                <button class="tab-btn" onclick="merchTab('mCodesTab',2)">📋 Redeemed Codes</button>
+                <button class="tab-btn" onclick="merchTab('mCodesTab',1)">📋 Redeemed Codes</button>
             </div>
 
             <!-- PIN Tab -->
@@ -485,54 +351,8 @@
                 </div>
             </div>
 
-            <!-- Offers Tab -->
-            <div id="mOffersTab" class="tab-panel">
-                <div class="card">
-                    <div class="card-title">🎁 Add an Offer</div>
-                    <div class="offer-type-row" id="offerTypeRow">
-                        <button type="button" class="offer-type-btn active" onclick="pickOfferType('sandwich',this)">🥪<br>Sandwich</button>
-                        <button type="button" class="offer-type-btn" onclick="pickOfferType('hot',this)">☕<br>Hot Beverage</button>
-                        <button type="button" class="offer-type-btn" onclick="pickOfferType('cold',this)">🥤<br>Cold Beverage</button>
-                        <button type="button" class="offer-type-btn" onclick="pickOfferType('custom',this)">✏️<br>Custom</button>
-                    </div>
-                    <div class="form-group"><label>Offer Title</label><input type="text" id="offTitle" placeholder="e.g. Sandwich" /></div>
-                    <div class="form-group"><label>Tag</label><input type="text" id="offTag" placeholder="e.g. B1G1 FREE" /></div>
-                    <div class="form-group"><label>Description</label><input type="text" id="offDesc" placeholder="e.g. Buy 1 sandwich and get 1 sandwich for free" /></div>
-                    <div class="form-group"><label>You will save (QAR)</label><input type="text" id="offSave" placeholder="e.g. 18" /></div>
-                    <div class="form-group"><label>Valid Till</label><input type="date" id="offValid" /></div>
-                    <div class="checkbox-row">
-                        <label><input type="checkbox" id="offDineIn" checked /> Dine-in</label>
-                        <label><input type="checkbox" id="offTakeaway" checked /> Takeaway</label>
-                    </div>
-                    <button class="btn" style="margin-top:0;" onclick="submitOffer()">✅ Add Offer</button>
-                    <div id="offerMsg" style="margin-top:10px;"></div>
-                </div>
-                <div class="card">
-                    <div class="card-title">📦 Your Offers</div>
-                    <div id="mOffersList"><div class="list-empty">No offers added yet.</div></div>
-                </div>
-            </div>
-
             <!-- Redeemed Codes Tab -->
             <div id="mCodesTab" class="tab-panel">
-                <div class="card">
-                    <div class="card-title">🎁 Grant More Redemptions</div>
-                    <div class="info" style="margin-bottom:12px;">Only customers who have already redeemed a code with you appear below. Give them 6/6 or as many as you like for any offer.</div>
-                    <div class="form-group">
-                        <label>Customer</label>
-                        <select id="grantCustomer"><option value="">— No customers yet —</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Offer</label>
-                        <select id="grantOffer"><option value="">— No offers yet —</option></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Redemptions to grant</label>
-                        <input type="number" id="grantAmount" value="6" min="1" />
-                    </div>
-                    <button class="btn" style="margin-top:0;" onclick="grantOfferCodes()">✅ Grant Redemptions</button>
-                    <div id="grantMsg" style="margin-top:10px;"></div>
-                </div>
                 <div class="card">
                     <div class="card-title">📋 Codes Redeemed at Your Store</div>
                     <div class="scroll-list" id="mRedeemedList">
@@ -560,102 +380,6 @@
 </div>
 
 <script>
-    /* ── error visibility: registered FIRST so any failure below (including Firebase
-       SDK scripts being blocked, or firebase.initializeApp throwing) is shown on screen
-       instead of leaving the "Connecting…" spinner stuck forever. ── */
-    function showFbError(msg) {
-        const box = document.getElementById('fbErrorBox');
-        const spinner = document.getElementById('fbSpinner');
-        const text = document.getElementById('fbLoadingText');
-        if (spinner) spinner.style.display = 'none';
-        if (text) text.textContent = '⚠️ Could not connect';
-        if (box) { box.style.display = 'block'; box.textContent = msg; }
-    }
-    window.addEventListener('error', (e) => {
-        showFbError('Script error: ' + (e.message || (e.error && e.error.message) || 'unknown error') + (e.filename ? ('\n(' + e.filename + ':' + e.lineno + ')') : ''));
-    }, true); // capture:true so this also catches <script src> load failures (e.g. Firebase CDN blocked)
-    window.addEventListener('unhandledrejection', (e) => {
-        showFbError('Error: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
-    });
-    const fbTimeout = setTimeout(() => {
-        showFbError('Taking too long to connect to Firebase.\n\nPossible causes:\n• No internet connection\n• Firestore/Authentication not enabled in Firebase Console\n• Ad-blocker or VPN blocking firebaseapp.com / gstatic.com\n\nCheck your connection and reload the page.');
-    }, 12000);
-
-    /* ══════════════ FIREBASE SETUP ══════════════
-       1. Go to https://console.firebase.google.com → create a project.
-       2. Build → Firestore Database → Create database (start in production mode) → pick a region.
-       3. Build → Authentication → Get started → Sign-in method tab → enable "Email/Password".
-          (This app signs people in with Firebase Auth behind the scenes, using their phone
-          number as the identifier — no real email is ever sent or needed.)
-       4. Project settings (gear icon) → General → "Your apps" → Add app → Web (</>) → register the app.
-       5. Copy the firebaseConfig object shown there and paste its values below.
-       6. In Firestore → Rules, paste the rules from the message this file was delivered with,
-          then click Publish.
-       7. Once deployed (e.g. on Netlify/Cloudflare), add that live domain under
-          Authentication → Settings → Authorized domains. */
-    const firebaseConfig = {
-        apiKey: "AIzaSyANjFnQihgGWGr_KhHlUAe6BmCJa7jy-YY",
-        authDomain: "mybook-app-e2727.firebaseapp.com",
-        projectId: "mybook-app-e2727",
-        storageBucket: "mybook-app-e2727.firebasestorage.app",
-        messagingSenderId: "291335174339",
-        appId: "1:291335174339:web:bde8997eff1f92a797ca76",
-        measurementId: "G-WRZEZB7Q9H"
-    };
-    let db, auth;
-    try {
-        if (typeof firebase === 'undefined') {
-            throw new Error('Firebase SDK did not load (gstatic.com scripts were blocked or the network failed).');
-        }
-        firebase.initializeApp(firebaseConfig);
-        db = firebase.firestore();
-        auth = firebase.auth();
-    } catch (err) {
-        showFbError('Firebase failed to initialize: ' + (err && err.message ? err.message : err));
-    }
-    // Firebase Auth needs a real-looking email — we build a fake one from role+phone so the
-    // UI can keep asking for "phone" and "password" exactly as before.
-    function authEmailFor(role, phone) { return `${role}_${phone}@mybook.local`; }
-
-
-    /* In-memory caches kept live by Firestore onSnapshot listeners.
-       Reads (getUsers/getCustData/getMerchData) stay synchronous, reading from these
-       caches, so the rest of the app's code below needs no other changes. Writes
-       update the cache immediately (so the UI feels instant) AND push to Firestore. */
-    let USERS_CACHE = {};
-    let CUST_CACHE = {};
-    let MERCH_CACHE = {};
-
-    function initFirebaseSync() {
-        let usersReady, custReady, merchReady;
-        const usersP = new Promise(res => { usersReady = res; });
-        const custP  = new Promise(res => { custReady  = res; });
-        const merchP = new Promise(res => { merchReady = res; });
-
-        db.collection('users').onSnapshot(snap => {
-            const next = {};
-            snap.forEach(doc => { next[doc.id] = doc.data(); });
-            USERS_CACHE = next;
-            usersReady();
-        }, err => { console.error('users sync error:', err); usersReady(); });
-
-        db.collection('customers').onSnapshot(snap => {
-            const next = {};
-            snap.forEach(doc => { next[doc.id] = doc.data(); });
-            CUST_CACHE = next;
-            custReady();
-        }, err => { console.error('customers sync error:', err); custReady(); });
-
-        db.collection('merchants').onSnapshot(snap => {
-            const next = {};
-            snap.forEach(doc => { next[doc.id] = doc.data(); });
-            MERCH_CACHE = next;
-            merchReady();
-        }, err => { console.error('merchants sync error:', err); merchReady(); });
-
-        return Promise.all([usersP, custP, merchP]);
-    }
-
     let currentUser = null;
     let selectedRole = 'customer';
     let selectedMerchantId = null;  // which merchant the customer is using
@@ -684,17 +408,12 @@
         chars = chars.map((c, i) => positions.includes(i) ? c : (Math.random() < 0.3 ? digits[Math.floor(Math.random()*digits.length)] : upper[Math.floor(Math.random()*upper.length)]));
         return chars.join('');
     }
-    function getUsers() { return USERS_CACHE; }
-    function getCustData(custId) { return CUST_CACHE[custId] || {codes:{}, history:[]}; }
-    function saveCustData(custId, d) {
-        CUST_CACHE[custId] = d;
-        db.collection('customers').doc(custId).set(d).catch(err => console.error('Firestore write failed (customers):', err));
-    }
-    function getMerchData(mId) { return MERCH_CACHE[mId] || {pin:null, redeemed:[]}; }
-    function saveMerchData(mId, d) {
-        MERCH_CACHE[mId] = d;
-        db.collection('merchants').doc(mId).set(d).catch(err => console.error('Firestore write failed (merchants):', err));
-    }
+    function getUsers() { return JSON.parse(localStorage.getItem('mybook_users')) || {}; }
+    function saveUsers(u) { localStorage.setItem('mybook_users', JSON.stringify(u)); }
+    function getCustData(custId) { return JSON.parse(localStorage.getItem(`cust_${custId}`)) || {codes:{}, history:[]}; }
+    function saveCustData(custId, d) { localStorage.setItem(`cust_${custId}`, JSON.stringify(d)); }
+    function getMerchData(mId) { return JSON.parse(localStorage.getItem(`merch_${mId}`)) || {pin:null, redeemed:[]}; }
+    function saveMerchData(mId, d) { localStorage.setItem(`merch_${mId}`, JSON.stringify(d)); }
     function allMerchants() {
         const u = getUsers();
         return Object.values(u).filter(x => x.role === 'merchant');
@@ -738,27 +457,15 @@
         if (pass.length < 6)              { flash('registerMsg','err','⚠️ Password must be at least 6 characters.'); return; }
         const users = getUsers();
         // allow same phone for different roles
-        if (Object.values(users).some(u => u.phone===phone && u.role===selectedRole)) {
-            flash('registerMsg','err','⚠️ Account already exists.'); return;
-        }
-        const role = selectedRole;
-        auth.createUserWithEmailAndPassword(authEmailFor(role, phone), pass).then(cred => {
-            const userId = cred.user.uid;
-            const newUser = { id:userId, name, phone, role, createdAt:new Date().toISOString() };
-            return db.collection('users').doc(userId).set(newUser).then(() => {
-                USERS_CACHE[userId] = newUser;
-                return auth.signOut(); // land back on login, matching the previous flow
-            });
-        }).then(() => {
-            flash('registerMsg','ok','✅ Account created! Please login.');
-            setTimeout(()=>{
-                goToLogin();
-                ['regName','regPhone','regPass','regPassC'].forEach(id=>document.getElementById(id).value='');
-            }, 1400);
-        }).catch(err => {
-            if (err.code === 'auth/email-already-in-use') flash('registerMsg','err','⚠️ Account already exists.');
-            else flash('registerMsg','err','⚠️ '+err.message);
-        });
+        const userId = `${selectedRole}_${phone}`;
+        if (users[userId]) { flash('registerMsg','err','⚠️ Account already exists.'); return; }
+        users[userId] = { id:userId, name, phone, password:pass, role:selectedRole, createdAt:new Date().toISOString() };
+        saveUsers(users);
+        flash('registerMsg','ok','✅ Account created! Please login.');
+        setTimeout(()=>{
+            goToLogin();
+            ['regName','regPhone','regPass','regPassC'].forEach(id=>document.getElementById(id).value='');
+        }, 1400);
     }
 
     /* ── login ── */
@@ -766,26 +473,22 @@
         const phone = document.getElementById('loginPhone').value.trim();
         const pass  = document.getElementById('loginPassword').value;
         if (!phone||!pass) { flash('loginMsg','err','⚠️ Enter phone and password.'); return; }
-        // Try both roles' auth email for this phone — the form doesn't ask which role, same as before.
-        auth.signInWithEmailAndPassword(authEmailFor('customer', phone), pass)
-            .catch(() => auth.signInWithEmailAndPassword(authEmailFor('merchant', phone), pass))
-            .then(cred => {
-                currentUser = cred.user.uid;
-                const u = getUsers()[currentUser];
-                selectedRole = u ? u.role : 'customer';
-                if (selectedRole==='customer') showCustomerPage();
-                else showMerchantPage();
-                document.getElementById('loginPhone').value='';
-                document.getElementById('loginPassword').value='';
-            }).catch(() => {
-                flash('loginMsg','err','❌ Phone or password is incorrect.');
-            });
+        const users = getUsers();
+        const found = Object.values(users).find(u => u.phone===phone && u.password===pass);
+        if (!found) { flash('loginMsg','err','❌ Phone or password is incorrect.'); return; }
+        currentUser = found.id;
+        selectedRole = found.role;
+        localStorage.setItem('mb_session', currentUser);
+        if (selectedRole==='customer') showCustomerPage();
+        else showMerchantPage();
+        document.getElementById('loginPhone').value='';
+        document.getElementById('loginPassword').value='';
     }
 
     /* ── logout ── */
     function logout() {
-        auth.signOut();
         currentUser=null; selectedMerchantId=null;
+        localStorage.removeItem('mb_session');
         document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
         document.getElementById('loginPage').classList.add('active');
     }
@@ -799,16 +502,15 @@
         switchMerchant();
     }
 
-    let selectedOfferId = null;
-
     function switchMerchant() {
         selectedMerchantId = null;
-        selectedOfferId = null;
         document.getElementById('custStep1').style.display='block';
         document.getElementById('custStep2').style.display='none';
-        document.getElementById('offerDetailPanel').style.display='none';
-        document.getElementById('custOfferListSection').style.display='none';
+        document.getElementById('custPinSection').style.display='none';
+        document.getElementById('custPin').value='';
+        document.getElementById('custPinMsg').innerHTML='';
         renderMerchantList();
+        custTab('custCodeTab',0);
     }
 
     function renderMerchantList() {
@@ -829,121 +531,33 @@
         selectedMerchantId = mId;
         document.querySelectorAll('.merchant-option').forEach(el=>el.classList.remove('selected'));
         document.getElementById(`mo_${mId}`).classList.add('selected');
-        const users = getUsers();
-        document.getElementById('offerListMerchantName').textContent = `🎁 Offers at ${users[mId] ? users[mId].name : ''}`;
-        document.getElementById('custOfferListSection').style.display='block';
-        renderOfferList(mId);
+        document.getElementById('custPinSection').style.display='block';
+        document.getElementById('custPin').value='';
+        document.getElementById('custPinMsg').innerHTML='';
     }
 
-    function renderOfferList(mId) {
-        const md = getMerchData(mId);
-        const offers = md.offers || [];
-        const div = document.getElementById('custOfferList');
-        if (!offers.length) { div.innerHTML='<div class="list-empty">No offers available yet.</div>'; return; }
-        div.innerHTML = offers.map(o => `
-            <div class="offer-card" onclick="selectOfferForCustomer('${o.id}')">
-                <div class="oc-tag">${o.tag||'OFFER'}</div>
-                <div class="oc-title">${o.title}</div>
-                <div class="oc-desc">${o.desc}</div>
-            </div>`).join('');
-    }
-
-    function openAccountFromOffers() {
-        document.getElementById('custStep1').style.display='none';
-        document.getElementById('custStep2').style.display='block';
-        custTab('custCodeTab',0);
-    }
-
-    function selectOfferForCustomer(offerId) {
+    function verifyMerchantPin() {
+        const pin = document.getElementById('custPin').value;
+        if (!pin||pin.length!==4||isNaN(pin)) { flash('custPinMsg','err','⚠️ Enter a 4-digit PIN.'); return; }
+        if (!selectedMerchantId) { flash('custPinMsg','err','⚠️ Please select a merchant first.'); return; }
         const md = getMerchData(selectedMerchantId);
-        const offer = (md.offers||[]).find(o=>o.id===offerId);
-        if (!offer) return;
-        selectedOfferId = offerId;
-        const users = getUsers();
-        const merchant = users[selectedMerchantId];
-        const mName = merchant ? merchant.name : '';
+        if (!md.pin) { flash('custPinMsg','err','❌ This merchant has not set a PIN yet.'); return; }
+        if (pin !== md.pin) { flash('custPinMsg','err','❌ Incorrect PIN.'); document.getElementById('custPin').value=''; return; }
 
-        document.getElementById('odHeaderMerchant').textContent = mName;
-        document.getElementById('odMerchantLink').textContent = mName + ' ⌄';
-        document.getElementById('odLogo').innerHTML = md.logo
-            ? `<img src="${md.logo}" />`
-            : (mName||'M').charAt(0).toUpperCase();
-        document.getElementById('odTag').textContent = offer.tag || 'OFFER';
-        document.getElementById('odTitle').textContent = offer.title;
-        document.getElementById('odSave').textContent = offer.save ? `You will save ${offer.save}` : '';
-        document.getElementById('odDesc').textContent = offer.desc;
-        document.getElementById('odPinNote').textContent = `Please ask ${mName} to enter its PIN`;
-        document.getElementById('odValid').textContent = offer.validTill ? `Valid till ${offer.validTill}` : '';
-
-        const iconsRow = document.getElementById('odIconsRow');
-        let icons = '';
-        if (offer.dineIn) icons += '<span>🍽️ Dine-in</span>';
-        if (offer.takeaway) icons += '<span>🏬 Takeaway</span>';
-        iconsRow.innerHTML = icons;
-
-        // reset favorite state
+        // Ensure customer has a code for this merchant
         const cd = getCustData(currentUser);
-        cd.favorites = cd.favorites || [];
-        const favIcon = document.getElementById('odFavIcon');
-        favIcon.textContent = cd.favorites.includes(offerId) ? '♥' : '♡';
+        cd.codes = cd.codes || {};
+        if (!cd.codes[selectedMerchantId]) {
+            cd.codes[selectedMerchantId] = { code: generateCode(), generatedTime: new Date().toISOString() };
+            saveCustData(currentUser, cd);
+        }
 
-        // redemptions remaining for this offer (defaults to 6/6 for a new customer/offer pair)
-        const ou = (cd.offerUses && cd.offerUses[selectedMerchantId] && cd.offerUses[selectedMerchantId][offerId]) || { total:6, used:0 };
-        document.getElementById('odRemaining').textContent = `${ou.total-ou.used}/${ou.total} redemptions left`;
-
-        // reset pin boxes
-        const boxes = document.querySelectorAll('.od-pin-box');
-        boxes.forEach(b=>b.value='');
-        document.getElementById('offerRedeemPin').value='';
-        document.getElementById('offerRedeemMsg').innerHTML='';
-        setupPinBoxes();
-
-        document.getElementById('custOfferListSection').style.display='none';
-        document.getElementById('offerDetailPanel').style.display='block';
-        boxes[0].focus();
-    }
-
-    function setupPinBoxes() {
-        const boxes = Array.from(document.querySelectorAll('.od-pin-box'));
-        boxes.forEach((box, i) => {
-            box.oninput = () => {
-                box.value = box.value.replace(/[^0-9]/g,'').slice(0,1);
-                if (box.value && i < boxes.length-1) boxes[i+1].focus();
-                document.getElementById('offerRedeemPin').value = boxes.map(b=>b.value).join('');
-            };
-            box.onkeydown = (e) => {
-                if (e.key==='Backspace' && !box.value && i>0) boxes[i-1].focus();
-            };
-        });
-    }
-
-    function backToOfferList() {
-        document.getElementById('offerDetailPanel').style.display='none';
-        document.getElementById('custOfferListSection').style.display='block';
-    }
-
-    function toggleFavorite() {
-        if (!selectedOfferId) return;
-        const cd = getCustData(currentUser);
-        cd.favorites = cd.favorites || [];
-        const idx = cd.favorites.indexOf(selectedOfferId);
-        const favIcon = document.getElementById('odFavIcon');
-        if (idx>-1) { cd.favorites.splice(idx,1); favIcon.textContent='♡'; }
-        else { cd.favorites.push(selectedOfferId); favIcon.textContent='♥'; }
-        saveCustData(currentUser, cd);
-    }
-
-    function shareOffer() {
-        const title = document.getElementById('odTitle').textContent;
-        const merchant = document.getElementById('odHeaderMerchant').textContent;
-        const text = `${title} offer at ${merchant} — check it out on MyBook!`;
-        if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
-        else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('Offer details copied to clipboard!')); }
-        else { alert(text); }
-    }
-
-    function reportIssue() {
-        alert('Thanks for letting us know — our team will look into this offer.');
+        flash('custPinMsg','ok','✅ PIN verified!');
+        setTimeout(()=>{
+            document.getElementById('custStep1').style.display='none';
+            document.getElementById('custStep2').style.display='block';
+            custTab('custCodeTab',0);
+        }, 700);
     }
 
     function custTab(tabId, idx) {
@@ -970,135 +584,50 @@
         }
     }
 
-    function getBadgeStyle(tag) {
-        const t = (tag||'').toUpperCase();
-        if (t.includes('FREE') || t.includes('B1G1')) return { bg:'#ffc107', color:'#5c3d00' };
-        if (t.includes('DISCOUNT')) return { bg:'#f4511e', color:'#fff' };
-        if (t.includes('BUNDLE')) return { bg:'#1e88e5', color:'#fff' };
-        return { bg:'#9e9e9e', color:'#fff' };
-    }
-
-    function shareRedemption(code, offerTitle, merchantName) {
-        const text = `${code} - ${offerTitle} at ${merchantName} — redeemed on MyBook!`;
-        if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
-        else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('Redemption details copied to clipboard!')); }
-        else { alert(text); }
-    }
-
     function refreshCustHistory() {
         const cd = getCustData(currentUser);
         const hist = (cd.history||[]).filter(h=>h.merchantId===selectedMerchantId);
         const users = getUsers();
-        const md = getMerchData(selectedMerchantId);
-        const merchantName = users[selectedMerchantId] ? users[selectedMerchantId].name : 'Merchant';
         const div = document.getElementById('custHistory');
         if (!hist.length) { div.innerHTML='<div class="list-empty">No codes redeemed with this merchant yet.</div>'; return; }
-
-        // Group entries by date (DD/MM/YYYY), most recent first
-        const groups = {};
-        const order = [];
-        hist.forEach(h => {
-            const d = new Date(h.time);
-            const key = `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-            if (!groups[key]) { groups[key] = []; order.push(key); }
-            groups[key].push(h);
-        });
-
-        div.innerHTML = order.map(dateKey => {
-            const items = groups[dateKey].map(h => {
-                const offer = h.offerId ? (md.offers||[]).find(o=>o.id===h.offerId) : null;
-                const offerTitle = offer ? offer.title : 'Redeemed Code';
-                const title = `${h.code} - ${offerTitle}`;
-                const tag = offer ? (offer.tag || 'OFFER') : 'REDEEMED';
-                const style = getBadgeStyle(tag);
-                const logoHtml = md.logo ? `<img src="${md.logo}" />` : merchantName.charAt(0).toUpperCase();
-                const safeOfferTitle = offerTitle.replace(/'/g, "\\'");
-                const safeMerchantName = merchantName.replace(/'/g, "\\'");
-                return `
-                    <div class="redemption-card">
-                        <div class="redemption-logo">${logoHtml}</div>
-                        <div class="redemption-body">
-                            <div class="redemption-title">${title}</div>
-                            <div class="redemption-badge" style="background:${style.bg};color:${style.color};">${tag}</div>
-                            <div class="redemption-store">${merchantName}</div>
-                        </div>
-                        <div class="redemption-share" onclick="shareRedemption('${h.code}','${safeOfferTitle}','${safeMerchantName}')">
-                            <span class="share-icon">🔗</span><span>Share</span>
-                        </div>
-                    </div>`;
-            }).join('');
-            return `<div class="redemption-date-header">Redeemed on ${dateKey}</div>${items}`;
-        }).join('');
+        div.innerHTML = hist.map(h=>`
+            <div class="r-item">
+                <div><span class="r-code">${h.code}</span><span class="r-badge">✓ Redeemed</span></div>
+                <div class="r-meta"><span>${new Date(h.time).toLocaleString()}</span></div>
+            </div>`).join('');
     }
 
-    function redeemCode(pinFieldId, msgFieldId) {
-        pinFieldId = pinFieldId || 'redeemPin';
-        msgFieldId = msgFieldId || 'redeemMsg';
-        const pin = document.getElementById(pinFieldId).value;
-        if (!pin || pin.length!==4) { flash(msgFieldId,'err','⚠️ Enter the merchant\'s 4-digit PIN to confirm.'); return; }
+    function redeemCode() {
+        const pin = document.getElementById('redeemPin').value;
+        if (!pin) { flash('redeemMsg','err','⚠️ Enter PIN to confirm.'); return; }
         const md = getMerchData(selectedMerchantId);
-        if (!md.pin) { flash(msgFieldId,'err','❌ This merchant has not set a PIN yet.'); return; }
-        if (pin !== md.pin) {
-            flash(msgFieldId,'err','❌ Incorrect PIN.');
-            document.getElementById(pinFieldId).value='';
-            if (pinFieldId==='offerRedeemPin') { document.querySelectorAll('.od-pin-box').forEach(b=>b.value=''); document.querySelectorAll('.od-pin-box')[0].focus(); }
-            return;
-        }
+        if (pin !== md.pin) { flash('redeemMsg','err','❌ Incorrect PIN.'); document.getElementById('redeemPin').value=''; return; }
 
         const cd = getCustData(currentUser);
-
-        // Per-offer redemption limit (defaults to 6/6 for a new customer/offer pair)
-        let offerEntry = null;
-        if (pinFieldId==='offerRedeemPin' && selectedOfferId) {
-            cd.offerUses = cd.offerUses || {};
-            cd.offerUses[selectedMerchantId] = cd.offerUses[selectedMerchantId] || {};
-            offerEntry = cd.offerUses[selectedMerchantId][selectedOfferId];
-            if (!offerEntry) {
-                offerEntry = { total:6, used:0 };
-                cd.offerUses[selectedMerchantId][selectedOfferId] = offerEntry;
-            }
-            if (offerEntry.used >= offerEntry.total) {
-                flash(msgFieldId,'err',`❌ You've used all your redemptions (${offerEntry.total}/${offerEntry.total}) for this offer. Ask the merchant to grant you more.`);
-                document.getElementById(pinFieldId).value='';
-                document.querySelectorAll('.od-pin-box').forEach(b=>b.value='');
-                return;
-            }
-        }
-
         cd.codes = cd.codes||{};
         const oldCode = (cd.codes[selectedMerchantId]||{}).code || generateCode();
 
         // Save to customer history
         cd.history = cd.history||[];
-        const histOfferId = (pinFieldId==='offerRedeemPin' && selectedOfferId) ? selectedOfferId : null;
-        cd.history.unshift({ code:oldCode, merchantId:selectedMerchantId, time:new Date().toISOString(), offerId:histOfferId });
+        cd.history.unshift({ code:oldCode, merchantId:selectedMerchantId, time:new Date().toISOString() });
         if (cd.history.length>100) cd.history=cd.history.slice(0,100);
 
         // New code
         cd.codes[selectedMerchantId] = { code:generateCode(), generatedTime:new Date().toISOString() };
-        if (offerEntry) offerEntry.used += 1;
         saveCustData(currentUser, cd);
 
         // Log in merchant's redeemed list
         const users = getUsers();
         const custName = users[currentUser].name;
         const custPhone = users[currentUser].phone;
-        const offerTitle = (pinFieldId==='offerRedeemPin' && selectedOfferId) ? ((md.offers||[]).find(o=>o.id===selectedOfferId)||{}).title : null;
         md.redeemed = md.redeemed||[];
-        md.redeemed.unshift({ code:oldCode, customerId:currentUser, customerName:custName, customerPhone:custPhone, offerId:selectedOfferId||null, offerTitle:offerTitle, time:new Date().toISOString() });
+        md.redeemed.unshift({ code:oldCode, customerName:custName, customerPhone:custPhone, time:new Date().toISOString() });
         if (md.redeemed.length>500) md.redeemed=md.redeemed.slice(0,500);
         saveMerchData(selectedMerchantId, md);
 
         refreshCustCode();
-        document.getElementById(pinFieldId).value='';
-        if (pinFieldId==='offerRedeemPin') {
-            document.querySelectorAll('.od-pin-box').forEach(b=>b.value='');
-            if (offerEntry) {
-                const remEl = document.getElementById('odRemaining');
-                if (remEl) remEl.textContent = `${offerEntry.total-offerEntry.used}/${offerEntry.total} redemptions left`;
-            }
-        }
-        document.getElementById(msgFieldId).innerHTML='';
+        document.getElementById('redeemPin').value='';
+        document.getElementById('redeemMsg').innerHTML='';
         // Show success popup
         document.getElementById('popupCode').textContent = oldCode;
         document.getElementById('successPopup').classList.add('show');
@@ -1113,15 +642,13 @@
         const newP = document.getElementById('newPass').value;
         if (!oldP||!newP) { flash('changePassMsg','err','⚠️ Both fields are required.'); return; }
         if (newP.length<6) { flash('changePassMsg','err','⚠️ New password must be at least 6 characters.'); return; }
-        const user = auth.currentUser;
-        const cred = firebase.auth.EmailAuthProvider.credential(user.email, oldP);
-        user.reauthenticateWithCredential(cred).then(() => user.updatePassword(newP)).then(() => {
-            flash('changePassMsg','ok','✅ Password changed successfully!', 3000);
-            document.getElementById('oldPass').value='';
-            document.getElementById('newPass').value='';
-        }).catch(() => {
-            flash('changePassMsg','err','❌ Current password is incorrect.');
-        });
+        const users = getUsers();
+        if (users[currentUser].password!==oldP) { flash('changePassMsg','err','❌ Current password is incorrect.'); return; }
+        users[currentUser].password=newP;
+        saveUsers(users);
+        flash('changePassMsg','ok','✅ Password changed successfully!', 3000);
+        document.getElementById('oldPass').value='';
+        document.getElementById('newPass').value='';
     }
 
     /* ═══════════════ MERCHANT ═══════════════ */
@@ -1132,46 +659,6 @@
         document.getElementById('merchWelcome').textContent=`Welcome, ${user.name}!`;
         merchTab('mPinTab',0);
         updateMerchStats();
-        refreshMerchLogo();
-    }
-
-    let pendingLogoDataUrl = null;
-
-    function refreshMerchLogo() {
-        const md = getMerchData(currentUser);
-        const preview = document.getElementById('mLogoPreview');
-        pendingLogoDataUrl = null;
-        preview.innerHTML = md.logo ? `<img src="${md.logo}" />` : '🏪';
-    }
-
-    function previewMerchantLogo() {
-        const file = document.getElementById('mLogoFile').files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            pendingLogoDataUrl = e.target.result;
-            document.getElementById('mLogoPreview').innerHTML = `<img src="${pendingLogoDataUrl}" />`;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    function saveMerchantLogo() {
-        if (!pendingLogoDataUrl) { flash('mLogoMsg','err','⚠️ Choose an image file first.'); return; }
-        const md = getMerchData(currentUser);
-        md.logo = pendingLogoDataUrl;
-        saveMerchData(currentUser, md);
-        flash('mLogoMsg','ok','✅ Logo saved! Customers will now see it on your offers.', 3000);
-        document.getElementById('mLogoFile').value='';
-        pendingLogoDataUrl = null;
-    }
-
-    function removeMerchantLogo() {
-        const md = getMerchData(currentUser);
-        delete md.logo;
-        saveMerchData(currentUser, md);
-        document.getElementById('mLogoFile').value='';
-        refreshMerchLogo();
-        flash('mLogoMsg','ok','✅ Logo removed.', 2500);
     }
 
     function merchTab(tabId, idx) {
@@ -1180,72 +667,8 @@
         document.getElementById(tabId).classList.add('active');
         document.querySelectorAll('#merchantPage .tab-btn')[idx].classList.add('active');
         if (tabId==='mPinTab') refreshMerchPin();
-        if (tabId==='mOffersTab') refreshMerchOffers();
         if (tabId==='mCodesTab') refreshMerchCodes();
         updateMerchStats();
-    }
-
-    /* ── Offer presets ── */
-    const OFFER_PRESETS = {
-        sandwich: { title:'Sandwich', tag:'B1G1 FREE', desc:'Buy 1 sandwich and get 1 sandwich for free' },
-        hot:      { title:'Hot Beverage (Medium size)', tag:'B1G1 FREE', desc:'Buy 1 hot beverage (medium size) and get 1 hot beverage (medium size) free' },
-        cold:     { title:'Cold Beverage (Medium size)', tag:'B1G1 FREE', desc:'Buy 1 cold beverage (medium size) and get 1 cold beverage (medium size) free' },
-        custom:   { title:'', tag:'OFFER', desc:'' }
-    };
-
-    function pickOfferType(type, btn) {
-        document.querySelectorAll('#offerTypeRow .offer-type-btn').forEach(b=>b.classList.remove('active'));
-        btn.classList.add('active');
-        const preset = OFFER_PRESETS[type];
-        document.getElementById('offTitle').value = preset.title;
-        document.getElementById('offTag').value = preset.tag;
-        document.getElementById('offDesc').value = preset.desc;
-    }
-
-    function submitOffer() {
-        const title = document.getElementById('offTitle').value.trim();
-        const tag = document.getElementById('offTag').value.trim() || 'OFFER';
-        const desc = document.getElementById('offDesc').value.trim();
-        const save = document.getElementById('offSave').value.trim();
-        const validTill = document.getElementById('offValid').value;
-        const dineIn = document.getElementById('offDineIn').checked;
-        const takeaway = document.getElementById('offTakeaway').checked;
-        if (!title || !desc) { flash('offerMsg','err','⚠️ Please fill in the offer title and description.'); return; }
-
-        const md = getMerchData(currentUser);
-        md.offers = md.offers || [];
-        md.offers.push({ id: uid(), title, tag, desc, save, validTill, dineIn, takeaway });
-        saveMerchData(currentUser, md);
-
-        flash('offerMsg','ok','✅ Offer added!', 2500);
-        document.getElementById('offTitle').value='';
-        document.getElementById('offTag').value='';
-        document.getElementById('offDesc').value='';
-        document.getElementById('offSave').value='';
-        document.getElementById('offValid').value='';
-        refreshMerchOffers();
-    }
-
-    function deleteOffer(offerId) {
-        const md = getMerchData(currentUser);
-        md.offers = (md.offers||[]).filter(o=>o.id!==offerId);
-        saveMerchData(currentUser, md);
-        refreshMerchOffers();
-    }
-
-    function refreshMerchOffers() {
-        const md = getMerchData(currentUser);
-        const offers = md.offers || [];
-        const div = document.getElementById('mOffersList');
-        if (!offers.length) { div.innerHTML='<div class="list-empty">No offers added yet.</div>'; return; }
-        div.innerHTML = offers.map(o => `
-            <div class="offer-manage-item">
-                <div>
-                    <div class="om-title">${o.title}</div>
-                    <div class="om-sub">${o.tag||''} · ${o.desc}</div>
-                </div>
-                <button class="offer-del-btn" onclick="deleteOffer('${o.id}')">✕ Remove</button>
-            </div>`).join('');
     }
 
     function refreshMerchPin() {
@@ -1281,78 +704,23 @@
         const md = getMerchData(currentUser);
         const list = document.getElementById('mRedeemedList');
         const redeemed = md.redeemed||[];
-        if (!redeemed.length) { list.innerHTML='<div class="list-empty">No codes redeemed at your store yet.</div>'; }
-        else {
-            list.innerHTML = redeemed.map(r=>`
-                <div class="r-item">
-                    <div><span class="r-code">${r.code}</span><span class="r-badge">✓ Redeemed</span>${r.offerTitle?` <span class="r-badge" style="background:#e3f2fd;color:#1976d2;border-color:#90caf9;">${r.offerTitle}</span>`:''}</div>
-                    <div class="r-meta">
-                        <span>👤 ${r.customerName} (${r.customerPhone})</span>
-                        <span>${new Date(r.time).toLocaleString()}</span>
-                    </div>
-                </div>`).join('');
-        }
-        populateGrantForm();
-    }
-
-    function populateGrantForm() {
-        const md = getMerchData(currentUser);
-        const custSel = document.getElementById('grantCustomer');
-        const offSel = document.getElementById('grantOffer');
-
-        const customersMap = {};
-        (md.redeemed||[]).forEach(r => { if (r.customerId) customersMap[r.customerId] = r.customerName; });
-        const custIds = Object.keys(customersMap);
-        custSel.innerHTML = custIds.length
-            ? custIds.map(id => `<option value="${id}">${customersMap[id]}</option>`).join('')
-            : '<option value="">— No customers yet —</option>';
-
-        const offers = md.offers || [];
-        offSel.innerHTML = offers.length
-            ? offers.map(o => `<option value="${o.id}">${o.title}</option>`).join('')
-            : '<option value="">— No offers yet —</option>';
-    }
-
-    function grantOfferCodes() {
-        const custId = document.getElementById('grantCustomer').value;
-        const offerId = document.getElementById('grantOffer').value;
-        const amount = parseInt(document.getElementById('grantAmount').value, 10);
-        if (!custId) { flash('grantMsg','err','⚠️ Select a customer — only customers who have redeemed with you before can be granted more.'); return; }
-        if (!offerId) { flash('grantMsg','err','⚠️ Select an offer.'); return; }
-        if (!amount || amount<1) { flash('grantMsg','err','⚠️ Enter a valid number of redemptions.'); return; }
-
-        const cd = getCustData(custId);
-        cd.offerUses = cd.offerUses || {};
-        cd.offerUses[currentUser] = cd.offerUses[currentUser] || {};
-        cd.offerUses[currentUser][offerId] = { total: amount, used: 0 };
-        saveCustData(custId, cd);
-
-        const users = getUsers();
-        flash('grantMsg','ok',`✅ Granted ${amount}/${amount} redemptions to ${users[custId]?users[custId].name:'customer'} for this offer.`, 4000);
+        if (!redeemed.length) { list.innerHTML='<div class="list-empty">No codes redeemed at your store yet.</div>'; return; }
+        list.innerHTML = redeemed.map(r=>`
+            <div class="r-item">
+                <div><span class="r-code">${r.code}</span><span class="r-badge">✓ Redeemed</span></div>
+                <div class="r-meta">
+                    <span>👤 ${r.customerName} (${r.customerPhone})</span>
+                    <span>${new Date(r.time).toLocaleString()}</span>
+                </div>
+            </div>`).join('');
     }
 
     /* ── auto session ── */
     window.addEventListener('load', () => {
-        try {
-            if (!auth || !db) return; // init already failed and error is shown
-            initFirebaseSync().then(() => {
-                clearTimeout(fbTimeout);
-                document.getElementById('fbLoadingOverlay').style.display = 'none';
-                // Firebase Auth remembers the signed-in user across reloads on its own.
-                auth.onAuthStateChanged(user => {
-                    if (user) {
-                        currentUser = user.uid;
-                        const u = getUsers()[currentUser];
-                        if (u) { selectedRole=u.role; if(u.role==='customer') showCustomerPage(); else showMerchantPage(); }
-                    }
-                });
-            }).catch(err => {
-                clearTimeout(fbTimeout);
-                showFbError('Firebase sync failed: ' + (err && err.message ? err.message : err));
-            });
-        } catch (err) {
-            clearTimeout(fbTimeout);
-            showFbError('Firebase failed to initialize: ' + (err && err.message ? err.message : err));
+        const s = localStorage.getItem('mb_session');
+        if (s) {
+            const u = getUsers()[s];
+            if (u) { currentUser=s; selectedRole=u.role; if(u.role==='customer') showCustomerPage(); else showMerchantPage(); }
         }
     });
 </script>
