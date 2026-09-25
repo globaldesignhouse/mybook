@@ -579,9 +579,24 @@
         messagingSenderId: "YOUR_SENDER_ID",
         appId: "YOUR_APP_ID"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    function showFbStatus(text) {
+        const box = document.querySelector('#fbLoadingOverlay .fb-loading-box');
+        if (box) box.innerHTML = `<div class="fb-spinner"></div><div>${text}</div>`;
+    }
+    function showFbError(text) {
+        const box = document.querySelector('#fbLoadingOverlay .fb-loading-box');
+        if (box) box.innerHTML = `<div style="font-size:28px;margin-bottom:10px;">⚠️</div><div style="max-width:280px;line-height:1.4;">${text}</div>`;
+    }
+
+    let db, auth;
+    try {
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        auth = firebase.auth();
+    } catch (err) {
+        showFbError('Firebase config error: ' + err.message + '<br><br>Check firebaseConfig values at the top of the &lt;script&gt; tag.');
+        throw err;
+    }
     // Firebase Auth needs a real-looking email — we build a fake one from role+phone so the
     // UI can keep asking for "phone" and "password" exactly as before.
     function authEmailFor(role, phone) { return `${role}_${phone}@mybook.local`; }
@@ -605,21 +620,21 @@
             snap.forEach(doc => { next[doc.id] = doc.data(); });
             USERS_CACHE = next;
             usersReady();
-        }, err => { console.error('users sync error:', err); usersReady(); });
+        }, err => { showFbError('Firestore error (users): ' + err.code + '<br><br>' + err.message); usersReady(); });
 
         db.collection('customers').onSnapshot(snap => {
             const next = {};
             snap.forEach(doc => { next[doc.id] = doc.data(); });
             CUST_CACHE = next;
             custReady();
-        }, err => { console.error('customers sync error:', err); custReady(); });
+        }, err => { showFbError('Firestore error (customers): ' + err.code + '<br><br>' + err.message); custReady(); });
 
         db.collection('merchants').onSnapshot(snap => {
             const next = {};
             snap.forEach(doc => { next[doc.id] = doc.data(); });
             MERCH_CACHE = next;
             merchReady();
-        }, err => { console.error('merchants sync error:', err); merchReady(); });
+        }, err => { showFbError('Firestore error (merchants): ' + err.code + '<br><br>' + err.message); merchReady(); });
 
         return Promise.all([usersP, custP, merchP]);
     }
@@ -1301,7 +1316,11 @@
 
     /* ── auto session ── */
     window.addEventListener('load', () => {
+        const stuckTimer = setTimeout(() => {
+            showFbError('Still trying to connect after 10 seconds.<br><br>Check: 1) firebaseConfig has your real project values (not YOUR_API_KEY placeholders), 2) a Firestore database exists in your Firebase project, 3) Firestore Rules are published.');
+        }, 10000);
         initFirebaseSync().then(() => {
+            clearTimeout(stuckTimer);
             document.getElementById('fbLoadingOverlay').style.display = 'none';
             // Firebase Auth remembers the signed-in user across reloads on its own.
             auth.onAuthStateChanged(user => {
