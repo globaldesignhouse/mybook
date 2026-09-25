@@ -560,6 +560,27 @@
 </div>
 
 <script>
+    /* ── error visibility: registered FIRST so any failure below (including Firebase
+       SDK scripts being blocked, or firebase.initializeApp throwing) is shown on screen
+       instead of leaving the "Connecting…" spinner stuck forever. ── */
+    function showFbError(msg) {
+        const box = document.getElementById('fbErrorBox');
+        const spinner = document.getElementById('fbSpinner');
+        const text = document.getElementById('fbLoadingText');
+        if (spinner) spinner.style.display = 'none';
+        if (text) text.textContent = '⚠️ Could not connect';
+        if (box) { box.style.display = 'block'; box.textContent = msg; }
+    }
+    window.addEventListener('error', (e) => {
+        showFbError('Script error: ' + (e.message || (e.error && e.error.message) || 'unknown error') + (e.filename ? ('\n(' + e.filename + ':' + e.lineno + ')') : ''));
+    }, true); // capture:true so this also catches <script src> load failures (e.g. Firebase CDN blocked)
+    window.addEventListener('unhandledrejection', (e) => {
+        showFbError('Error: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
+    });
+    const fbTimeout = setTimeout(() => {
+        showFbError('Taking too long to connect to Firebase.\n\nPossible causes:\n• No internet connection\n• Firestore/Authentication not enabled in Firebase Console\n• Ad-blocker or VPN blocking firebaseapp.com / gstatic.com\n\nCheck your connection and reload the page.');
+    }, 12000);
+
     /* ══════════════ FIREBASE SETUP ══════════════
        1. Go to https://console.firebase.google.com → create a project.
        2. Build → Firestore Database → Create database (start in production mode) → pick a region.
@@ -581,12 +602,21 @@
         appId: "1:291335174339:web:bde8997eff1f92a797ca76",
         measurementId: "G-WRZEZB7Q9H"
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const auth = firebase.auth();
+    let db, auth;
+    try {
+        if (typeof firebase === 'undefined') {
+            throw new Error('Firebase SDK did not load (gstatic.com scripts were blocked or the network failed).');
+        }
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        auth = firebase.auth();
+    } catch (err) {
+        showFbError('Firebase failed to initialize: ' + (err && err.message ? err.message : err));
+    }
     // Firebase Auth needs a real-looking email — we build a fake one from role+phone so the
     // UI can keep asking for "phone" and "password" exactly as before.
     function authEmailFor(role, phone) { return `${role}_${phone}@mybook.local`; }
+
 
     /* In-memory caches kept live by Firestore onSnapshot listeners.
        Reads (getUsers/getCustData/getMerchData) stay synchronous, reading from these
@@ -1302,29 +1332,9 @@
     }
 
     /* ── auto session ── */
-    function showFbError(msg) {
-        const box = document.getElementById('fbErrorBox');
-        const spinner = document.getElementById('fbSpinner');
-        const text = document.getElementById('fbLoadingText');
-        if (spinner) spinner.style.display = 'none';
-        if (text) text.textContent = '⚠️ Could not connect';
-        if (box) { box.style.display = 'block'; box.textContent = msg; }
-    }
-
-    window.addEventListener('error', (e) => {
-        showFbError('Script error: ' + (e.message || e.error || 'unknown error'));
-    });
-    window.addEventListener('unhandledrejection', (e) => {
-        showFbError('Error: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
-    });
-
-    // If nothing has resolved within 12 seconds, show a timeout message instead of spinning forever.
-    const fbTimeout = setTimeout(() => {
-        showFbError('Taking too long to connect to Firebase.\n\nPossible causes:\n• No internet connection\n• Firestore/Authentication not enabled in Firebase Console\n• Ad-blocker or VPN blocking firebaseapp.com / gstatic.com\n\nCheck your connection and reload the page.');
-    }, 12000);
-
     window.addEventListener('load', () => {
         try {
+            if (!auth || !db) return; // init already failed and error is shown
             initFirebaseSync().then(() => {
                 clearTimeout(fbTimeout);
                 document.getElementById('fbLoadingOverlay').style.display = 'none';
