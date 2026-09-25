@@ -262,8 +262,9 @@
 <body>
 <div class="fb-loading-overlay" id="fbLoadingOverlay">
     <div class="fb-loading-box">
-        <div class="fb-spinner"></div>
-        <div>Connecting…</div>
+        <div class="fb-spinner" id="fbSpinner"></div>
+        <div id="fbLoadingText">Connecting…</div>
+        <div id="fbErrorBox" style="display:none;margin-top:16px;max-width:320px;background:rgba(0,0,0,0.35);border-radius:10px;padding:14px;font-size:12px;text-align:left;word-break:break-word;line-height:1.5;"></div>
     </div>
 </div>
 <div class="container">
@@ -1301,18 +1302,48 @@
     }
 
     /* ── auto session ── */
+    function showFbError(msg) {
+        const box = document.getElementById('fbErrorBox');
+        const spinner = document.getElementById('fbSpinner');
+        const text = document.getElementById('fbLoadingText');
+        if (spinner) spinner.style.display = 'none';
+        if (text) text.textContent = '⚠️ Could not connect';
+        if (box) { box.style.display = 'block'; box.textContent = msg; }
+    }
+
+    window.addEventListener('error', (e) => {
+        showFbError('Script error: ' + (e.message || e.error || 'unknown error'));
+    });
+    window.addEventListener('unhandledrejection', (e) => {
+        showFbError('Error: ' + (e.reason && e.reason.message ? e.reason.message : JSON.stringify(e.reason)));
+    });
+
+    // If nothing has resolved within 12 seconds, show a timeout message instead of spinning forever.
+    const fbTimeout = setTimeout(() => {
+        showFbError('Taking too long to connect to Firebase.\n\nPossible causes:\n• No internet connection\n• Firestore/Authentication not enabled in Firebase Console\n• Ad-blocker or VPN blocking firebaseapp.com / gstatic.com\n\nCheck your connection and reload the page.');
+    }, 12000);
+
     window.addEventListener('load', () => {
-        initFirebaseSync().then(() => {
-            document.getElementById('fbLoadingOverlay').style.display = 'none';
-            // Firebase Auth remembers the signed-in user across reloads on its own.
-            auth.onAuthStateChanged(user => {
-                if (user) {
-                    currentUser = user.uid;
-                    const u = getUsers()[currentUser];
-                    if (u) { selectedRole=u.role; if(u.role==='customer') showCustomerPage(); else showMerchantPage(); }
-                }
+        try {
+            initFirebaseSync().then(() => {
+                clearTimeout(fbTimeout);
+                document.getElementById('fbLoadingOverlay').style.display = 'none';
+                // Firebase Auth remembers the signed-in user across reloads on its own.
+                auth.onAuthStateChanged(user => {
+                    if (user) {
+                        currentUser = user.uid;
+                        const u = getUsers()[currentUser];
+                        if (u) { selectedRole=u.role; if(u.role==='customer') showCustomerPage(); else showMerchantPage(); }
+                    }
+                });
+            }).catch(err => {
+                clearTimeout(fbTimeout);
+                showFbError('Firebase sync failed: ' + (err && err.message ? err.message : err));
             });
-        });
+        } catch (err) {
+            clearTimeout(fbTimeout);
+            showFbError('Firebase failed to initialize: ' + (err && err.message ? err.message : err));
+        }
     });
 </script>
 </body>
