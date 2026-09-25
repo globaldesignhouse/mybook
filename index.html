@@ -96,6 +96,9 @@
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
         .logout-btn { padding: 7px 14px; background: #ef5350; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
         .logout-btn:hover { background: #c62828; }
+        .delete-btn { padding: 7px 14px; background: transparent; color: #c62828; border: 1.5px solid #ef9a9a; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
+        .delete-btn:hover { background: #ffebee; }
+        .top-bar-actions { display: flex; gap: 8px; }
         /* Stats row */
         .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 18px; }
         .stat-card { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 18px; border-radius: 14px; text-align: center; }
@@ -182,6 +185,78 @@
         .popup-code { font-size:22px; font-weight:800; color:#111; font-family:'Courier New',monospace; letter-spacing:3px; margin-top:6px; }
         .popup-done { width:100%; margin-top:28px; padding:16px; background:#e53935; color:white; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; letter-spacing:1px; }
         .popup-done:hover { background:#c62828; }
+
+        /* ═══ Offer management (merchant) ═══ */
+        .offer-type-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px; }
+        .offer-type-btn { flex:1; min-width:90px; padding:12px 8px; border:2px solid #e0e7ff; background:white; border-radius:12px; cursor:pointer; font-size:12px; font-weight:600; color:#555; text-align:center; }
+        .offer-type-btn:hover { border-color:#ec1362; }
+        .offer-type-btn.active { background:#ec1362; border-color:#ec1362; color:white; }
+        .offer-manage-item { background:white; border:1px solid #eee; border-radius:12px; padding:12px 14px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+        .offer-manage-item .om-title { font-weight:700; color:#333; font-size:14px; }
+        .offer-manage-item .om-sub { font-size:12px; color:#999; margin-top:2px; }
+        .offer-del-btn { background:#ffebee; color:#c62828; border:1px solid #ef9a9a; border-radius:8px; padding:6px 10px; cursor:pointer; font-size:12px; font-weight:700; }
+        .checkbox-row { display:flex; gap:18px; margin-bottom:14px; }
+        .checkbox-row label { display:flex; align-items:center; gap:6px; font-weight:600; font-size:13px; color:#444; }
+        .checkbox-row input { width:auto; }
+
+        /* ═══ Customer offer list ═══ */
+        .offer-card { background:white; border:2px solid #e0e7ff; border-radius:14px; padding:16px; margin-bottom:12px; cursor:pointer; transition:all .2s; }
+        .offer-card:hover { border-color:#ec1362; background:#fff5f8; }
+        .offer-card .oc-tag { display:inline-block; background:#ffb300; color:white; font-size:11px; font-weight:700; padding:3px 10px; border-radius:20px; margin-bottom:8px; }
+        .offer-card .oc-title { font-size:18px; font-weight:800; color:#ec1362; margin-bottom:6px; }
+        .offer-card .oc-desc { font-size:13px; color:#777; }
+
+        /* ═══ Customer offer detail (Batteel-style) ═══ */
+        #offerDetailPanel { display:none; }
+        .od-header { background:#ec1362; margin:-36px -36px 0; padding:20px 20px; display:flex; align-items:center; gap:16px; color:white; }
+        .od-back { background:none; border:none; color:white; font-size:22px; cursor:pointer; line-height:1; }
+        .od-header-title { font-size:17px; font-weight:800; }
+        .od-body { padding:28px 4px 10px; text-align:center; }
+        .od-logo { width:64px; height:64px; border-radius:50%; background:#f3e6d8; color:#8a5a2b; font-size:26px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; }
+        .od-merchant-link { color:#29b6f6; font-weight:700; font-size:15px; text-decoration:underline; cursor:pointer; margin-bottom:18px; }
+        .od-tag { display:inline-block; background:#ffb300; color:white; font-size:12px; font-weight:800; padding:5px 16px; border-radius:20px; margin-bottom:14px; letter-spacing:.5px; }
+        .od-title { font-size:32px; font-weight:800; color:#ec1362; margin-bottom:10px; }
+        .od-save { font-size:17px; font-weight:700; color:#29b6f6; margin-bottom:16px; }
+        .od-desc { font-size:15px; color:#333; line-height:1.5; margin-bottom:20px; }
+        .od-pin-note { font-size:13px; color:#888; margin-bottom:14px; }
+        .od-pin-row { display:flex; gap:12px; justify-content:center; margin-bottom:22px; }
+        .od-pin-box { width:52px; height:60px; border:2px solid #ccc; border-radius:12px; font-size:24px; text-align:center; font-weight:700; }
+        .od-pin-box:focus { outline:none; border-color:#ec1362; }
+        .od-redeem-btn { width:100%; padding:16px; background:#ec1362; color:white; border:none; border-radius:12px; font-size:16px; font-weight:800; letter-spacing:1px; cursor:pointer; margin-bottom:16px; }
+        .od-redeem-btn:hover { background:#c81050; }
+        .od-report-btn { display:inline-block; background:none; border:2px solid #f0c2d4; color:#ec1362; border-radius:20px; padding:8px 18px; font-size:13px; font-weight:700; cursor:pointer; margin-bottom:22px; }
+        .od-icons-row { display:flex; justify-content:center; gap:32px; margin-bottom:22px; font-size:14px; color:#555; }
+        .od-fav-share { display:flex; justify-content:center; gap:48px; margin-bottom:20px; }
+        .od-fav-share div { text-align:center; cursor:pointer; }
+        .od-fav-share .icon { font-size:22px; color:#ec1362; }
+        .od-fav-share.active-fav .icon.heart { color:#ec1362; }
+        .od-fav-share span { display:block; font-size:12px; color:#29b6f6; font-weight:700; margin-top:2px; }
+        .od-valid { font-size:13px; color:#555; margin-bottom:8px; }
+        .od-rules { font-size:13px; color:#555; }
+        .od-rules b { color:#ec1362; cursor:pointer; }
+        .logo-upload-row { display:flex; align-items:center; gap:16px; }
+        .logo-preview { width:64px; height:64px; border-radius:50%; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-size:26px; overflow:hidden; flex-shrink:0; border:2px solid #e0e7ff; }
+        .logo-preview img { width:100%; height:100%; object-fit:cover; }
+        .od-logo img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+
+        /* ═══ Redemption history cards (matching app screenshot) ═══ */
+        .hist-date-header { font-weight:700; font-size:14px; color:#333; margin:18px 0 10px; }
+        .hist-date-header:first-child { margin-top:2px; }
+        .redemption-card { display:flex; align-items:center; gap:14px; background:white; border:1px solid #eee; border-radius:14px; padding:14px; margin-bottom:12px; box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+        .rc-logo { width:52px; height:52px; border-radius:12px; background:#f0f0f0; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:18px; color:#667eea; overflow:hidden; flex-shrink:0; }
+        .rc-logo img { width:100%; height:100%; object-fit:cover; }
+        .rc-body { flex:1; min-width:0; }
+        .rc-title { font-weight:700; font-size:14px; color:#222; margin-bottom:6px; line-height:1.3; }
+        .rc-code { font-family:'Courier New',monospace; }
+        .rc-badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.3px; }
+        .rc-sub { font-size:12px; color:#999; }
+        .rc-share { display:flex; flex-direction:column; align-items:center; color:#ec1362; font-size:18px; cursor:pointer; flex-shrink:0; }
+        .rc-share span { font-size:10px; margin-top:2px; font-weight:600; }
+
+        /* ═══ Merchant search on customer home ═══ */
+        #merchantSearchWrap { display:none; margin-bottom:12px; }
+        #merchantSearch { width:100%; padding:11px 14px; border:2px solid #e0e7ff; border-radius:10px; font-size:14px; }
+        #merchantSearch:focus { outline:none; border-color:#667eea; }
     </style>
 </head>
 <body>
@@ -230,28 +305,70 @@
         <div id="customerPage" class="page">
             <div class="top-bar">
                 <h2>👤 Customer</h2>
-                <button class="logout-btn" onclick="logout()">Logout</button>
+                <div class="top-bar-actions">
+                    <button class="delete-btn" onclick="openDeleteModal()">Delete Account</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
             </div>
             <div style="text-align:center;margin-bottom:16px;color:#777;font-size:13px;" id="custWelcome"></div>
 
             <!-- Step 1: Choose merchant -->
             <div id="custStep1">
-                <div class="info">Select a merchant and enter their PIN to generate or redeem your code.</div>
+                <div class="info">Select a merchant, then pick an offer to redeem.</div>
                 <div class="card">
                     <div class="card-title">🏪 Select Merchant</div>
+                    <div id="merchantSearchWrap">
+                        <input type="text" id="merchantSearch" placeholder="🔍 Search merchants..." oninput="filterMerchantList()" />
+                    </div>
                     <div class="merchant-list" id="merchantList">
                         <div class="list-empty">No merchants registered yet.</div>
                     </div>
                 </div>
-                <div id="custPinSection" style="display:none;">
+                <div id="custOfferListSection" style="display:none;">
                     <div class="card">
-                        <div class="card-title">🔐 Enter Merchant PIN</div>
-                        <div class="inp-row">
-                            <input type="password" id="custPin" placeholder="4-digit PIN" maxlength="4" />
-                            <button onclick="verifyMerchantPin()">Verify</button>
-                        </div>
-                        <div id="custPinMsg"></div>
+                        <div class="card-title" id="offerListMerchantName">🎁 Available Offers</div>
+                        <div id="custOfferList"><div class="list-empty">No offers available yet.</div></div>
                     </div>
+                    <div style="text-align:center;margin-top:10px;">
+                        <a style="font-size:13px;color:#667eea;cursor:pointer;font-weight:600;" onclick="switchMerchant()">← Choose a different merchant</a>
+                        &nbsp;·&nbsp;
+                        <a style="font-size:13px;color:#667eea;cursor:pointer;font-weight:600;" onclick="openAccountFromOffers()">My Account / History →</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Offer detail (Batteel-style) -->
+            <div id="offerDetailPanel">
+                <div class="od-header">
+                    <button class="od-back" onclick="backToOfferList()">←</button>
+                    <div class="od-header-title" id="odHeaderMerchant">Merchant</div>
+                </div>
+                <div class="od-body">
+                    <div class="od-logo" id="odLogo">M</div>
+                    <div class="od-merchant-link" onclick="backToOfferList()" id="odMerchantLink">Merchant Name ⌄</div>
+                    <div class="od-tag" id="odTag">B1G1 FREE</div>
+                    <div class="od-title" id="odTitle">Offer</div>
+                    <div class="od-save" id="odSave">You will save 0</div>
+                    <div class="od-desc" id="odDesc">Description</div>
+                    <div class="od-pin-note" id="odRemaining">6/6 redemptions left</div>
+                    <div class="od-pin-note" id="odPinNote">Please ask Merchant to enter its PIN</div>
+                    <div class="od-pin-row">
+                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
+                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
+                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
+                        <input class="od-pin-box" type="password" maxlength="1" inputmode="numeric" />
+                    </div>
+                    <input type="hidden" id="offerRedeemPin" />
+                    <button class="od-redeem-btn" onclick="redeemCode('offerRedeemPin','offerRedeemMsg')">REDEEM</button>
+                    <div id="offerRedeemMsg"></div>
+                    <div><button class="od-report-btn" onclick="reportIssue()">Report an issue</button></div>
+                    <div class="od-icons-row" id="odIconsRow"></div>
+                    <div class="od-fav-share">
+                        <div onclick="toggleFavorite()"><span class="icon heart" id="odFavIcon">♡</span><span>Favorite</span></div>
+                        <div onclick="shareOffer()"><span class="icon">⇗</span><span>Share</span></div>
+                    </div>
+                    <div class="od-valid" id="odValid">Valid till —</div>
+                    <div class="od-rules">Offers are subjected to <b onclick="alert('Standard offer rules apply.')">Rules of Use</b></div>
                 </div>
             </div>
 
@@ -260,7 +377,7 @@
                 <div class="tab-bar">
                     <button class="tab-btn active" onclick="custTab('custCodeTab',0)">🎫 My Code</button>
                     <button class="tab-btn" onclick="custTab('custHistTab',1)">📜 History</button>
-                    <button class="tab-btn" onclick="custTab('custPassTab',2)">🔑 Password</button>
+                    <button class="tab-btn" onclick="custTab('custProfileTab',2)">👤 Profile</button>
                 </div>
 
                 <div id="custCodeTab" class="tab-panel active">
@@ -294,7 +411,28 @@
                     </div>
                 </div>
 
-                <div id="custPassTab" class="tab-panel">
+                <div id="custProfileTab" class="tab-panel">
+                    <div class="card" style="text-align:center;">
+                        <div class="card-title" style="text-align:left;">🖼️ Profile Photo</div>
+                        <div class="logo-upload-row">
+                            <div class="logo-preview" id="custAvatarPreview">👤</div>
+                            <div style="flex:1;text-align:left;">
+                                <input type="file" id="custAvatarFile" accept="image/*" onchange="previewCustAvatar()" />
+                                <div style="margin-top:8px;">
+                                    <button class="btn-sm" style="background:#667eea;" onclick="saveCustAvatar()">Save Photo</button>
+                                    <button class="btn-sm" style="background:#aaa;" onclick="removeCustAvatar()">Remove</button>
+                                </div>
+                                <div id="custAvatarMsg" style="margin-top:8px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-title">✏️ Edit Profile Details</div>
+                        <div class="form-group"><label>Full Name</label><input type="text" id="custProfName" placeholder="Your name" /></div>
+                        <div class="form-group"><label>Phone Number</label><input type="text" id="custProfPhone" placeholder="Phone number" /></div>
+                        <button class="btn" style="margin-top:0;" onclick="saveCustProfile()">💾 Save Details</button>
+                        <div id="custProfileMsg" style="margin-top:10px;"></div>
+                    </div>
                     <div class="card">
                         <div class="card-title">🔑 Change Login Password</div>
                         <div class="form-group"><label>Current Password</label><input type="password" id="oldPass" placeholder="Current password" /></div>
@@ -310,9 +448,27 @@
         <div id="merchantPage" class="page">
             <div class="top-bar">
                 <h2>🏪 Merchant</h2>
-                <button class="logout-btn" onclick="logout()">Logout</button>
+                <div class="top-bar-actions">
+                    <button class="delete-btn" onclick="openDeleteModal()">Delete Account</button>
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                </div>
             </div>
             <div style="text-align:center;margin-bottom:16px;color:#777;font-size:13px;" id="merchWelcome"></div>
+
+            <div class="card" style="text-align:center;">
+                <div class="card-title" style="text-align:left;">🖼️ Store Logo</div>
+                <div class="logo-upload-row">
+                    <div class="logo-preview" id="mLogoPreview">🏪</div>
+                    <div style="flex:1;text-align:left;">
+                        <input type="file" id="mLogoFile" accept="image/*" onchange="previewMerchantLogo()" />
+                        <div style="margin-top:8px;">
+                            <button class="btn-sm" style="background:#667eea;" onclick="saveMerchantLogo()">Save Logo</button>
+                            <button class="btn-sm" style="background:#aaa;" onclick="removeMerchantLogo()">Remove</button>
+                        </div>
+                        <div id="mLogoMsg" style="margin-top:8px;"></div>
+                    </div>
+                </div>
+            </div>
 
             <div class="stats">
                 <div class="stat-card">
@@ -327,7 +483,9 @@
 
             <div class="tab-bar">
                 <button class="tab-btn active" onclick="merchTab('mPinTab',0)">🔐 PIN</button>
-                <button class="tab-btn" onclick="merchTab('mCodesTab',1)">📋 Redeemed Codes</button>
+                <button class="tab-btn" onclick="merchTab('mOffersTab',1)">🎁 Offers</button>
+                <button class="tab-btn" onclick="merchTab('mCodesTab',2)">📋 Redeemed Codes</button>
+                <button class="tab-btn" onclick="merchTab('mProfileTab',3)">👤 Profile</button>
             </div>
 
             <!-- PIN Tab -->
@@ -351,13 +509,78 @@
                 </div>
             </div>
 
+            <!-- Offers Tab -->
+            <div id="mOffersTab" class="tab-panel">
+                <div class="card">
+                    <div class="card-title">🎁 Add an Offer</div>
+                    <div class="offer-type-row" id="offerTypeRow">
+                        <button type="button" class="offer-type-btn active" onclick="pickOfferType('sandwich',this)">🥪<br>Sandwich</button>
+                        <button type="button" class="offer-type-btn" onclick="pickOfferType('hot',this)">☕<br>Hot Beverage</button>
+                        <button type="button" class="offer-type-btn" onclick="pickOfferType('cold',this)">🥤<br>Cold Beverage</button>
+                        <button type="button" class="offer-type-btn" onclick="pickOfferType('custom',this)">✏️<br>Custom</button>
+                    </div>
+                    <div class="form-group"><label>Offer Title</label><input type="text" id="offTitle" placeholder="e.g. Sandwich" /></div>
+                    <div class="form-group"><label>Tag</label><input type="text" id="offTag" placeholder="e.g. B1G1 FREE" /></div>
+                    <div class="form-group"><label>Description</label><input type="text" id="offDesc" placeholder="e.g. Buy 1 sandwich and get 1 sandwich for free" /></div>
+                    <div class="form-group"><label>You will save (QAR)</label><input type="text" id="offSave" placeholder="e.g. 18" /></div>
+                    <div class="form-group"><label>Valid Till</label><input type="date" id="offValid" /></div>
+                    <div class="checkbox-row">
+                        <label><input type="checkbox" id="offDineIn" checked /> Dine-in</label>
+                        <label><input type="checkbox" id="offTakeaway" checked /> Takeaway</label>
+                    </div>
+                    <button class="btn" style="margin-top:0;" onclick="submitOffer()">✅ Add Offer</button>
+                    <div id="offerMsg" style="margin-top:10px;"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">📦 Your Offers</div>
+                    <div id="mOffersList"><div class="list-empty">No offers added yet.</div></div>
+                </div>
+            </div>
+
             <!-- Redeemed Codes Tab -->
             <div id="mCodesTab" class="tab-panel">
+                <div class="card">
+                    <div class="card-title">🎁 Grant More Redemptions</div>
+                    <div class="info" style="margin-bottom:12px;">Only customers who have already redeemed a code with you appear below. Give them 6/6 or as many as you like for any offer.</div>
+                    <div class="form-group">
+                        <label>Customer</label>
+                        <select id="grantCustomer"><option value="">— No customers yet —</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Offer</label>
+                        <select id="grantOffer"><option value="">— No offers yet —</option></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Redemptions to grant</label>
+                        <input type="number" id="grantAmount" value="6" min="1" />
+                    </div>
+                    <button class="btn" style="margin-top:0;" onclick="grantOfferCodes()">✅ Grant Redemptions</button>
+                    <div id="grantMsg" style="margin-top:10px;"></div>
+                </div>
                 <div class="card">
                     <div class="card-title">📋 Codes Redeemed at Your Store</div>
                     <div class="scroll-list" id="mRedeemedList">
                         <div class="list-empty">No codes redeemed yet.</div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="mProfileTab" class="tab-panel">
+                <div class="card">
+                    <div class="card-title">✏️ Edit Store Details</div>
+                    <div class="form-group"><label>Store / Business Name</label><input type="text" id="mProfName" placeholder="Store name" /></div>
+                    <div class="form-group"><label>Phone Number</label><input type="text" id="mProfPhone" placeholder="Phone number" /></div>
+                    <div class="form-group"><label>Branch / Location</label><input type="text" id="mProfLocation" placeholder="e.g. City Center Doha" /></div>
+                    <button class="btn" style="margin-top:0;" onclick="saveMerchProfile()">💾 Save Details</button>
+                    <div id="mProfileMsg" style="margin-top:10px;"></div>
+                </div>
+                <div class="card">
+                    <div class="card-title">🔑 Change Login Password</div>
+                    <div class="form-group"><label>Current Password</label><input type="password" id="mOldPass" placeholder="Current password" /></div>
+                    <div class="form-group"><label>New Password</label><input type="password" id="mNewPass" placeholder="New password (min 6 chars)" /></div>
+                    <button class="btn" style="margin-top:0;" onclick="changeMerchantPassword()">Change Password</button>
+                    <div id="mChangePassMsg" style="margin-top:10px;"></div>
                 </div>
             </div>
         </div>
@@ -379,7 +602,87 @@
     </div>
 </div>
 
+<!-- Delete Account confirmation -->
+<div class="popup-overlay" id="deleteAccountModal">
+    <div class="popup-box" style="text-align:left;">
+        <div class="popup-title" style="text-align:center;font-size:20px;">⚠️ Delete Account</div>
+        <div class="popup-desc" style="margin-bottom:18px;text-align:center;">This will permanently delete your account and all your data. This action cannot be undone. Enter your password to confirm.</div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="delAccPassword" placeholder="Enter your password" />
+        </div>
+        <div id="delAccMsg"></div>
+        <button class="btn" style="background:#aaa;margin-top:4px;" onclick="closeDeleteModal()">Cancel</button>
+        <button class="btn" style="background:linear-gradient(135deg,#e53935,#c62828);" onclick="confirmDeleteAccount()">Delete My Account Permanently</button>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
 <script>
+    // bcryptjs exposes itself as `dcodeIO.bcrypt` (older UMD builds) or `bcrypt` — support either.
+    const bcryptLib = (typeof dcodeIO !== 'undefined' && dcodeIO.bcrypt) ? dcodeIO.bcrypt : bcrypt;
+    function hashPassword(plain) { return bcryptLib.hashSync(plain, 10); }
+    function checkPassword(plain, hash) {
+        // Backward-compatible: old accounts created before this fix have plaintext passwords
+        // (no bcrypt hash format), so fall back to a direct compare for those only.
+        if (typeof hash === 'string' && hash.startsWith('$2')) return bcryptLib.compareSync(plain, hash);
+        return plain === hash;
+    }
+    /* ══════════════ SUPABASE SETUP ══════════════
+       1. Create a free project at https://supabase.com
+       2. In SQL Editor, run:
+          create table kv_store (
+            key text primary key,
+            value jsonb not null default '{}'::jsonb,
+            updated_at timestamptz default now()
+          );
+          alter table kv_store enable row level security;
+          create policy "public read" on kv_store for select using (true);
+          create policy "public write" on kv_store for insert with check (true);
+          create policy "public update" on kv_store for update using (true);
+          create policy "public delete" on kv_store for delete using (true);
+       3. Go to Project Settings → API, copy the "Project URL" and "anon public" key below.
+
+       NOTE on security: passwords are now hashed with bcrypt before they're ever sent to
+       Supabase, so nobody who reads this table can see anyone's actual password. That said,
+       this app's design (customers write to a merchant's row when redeeming, merchants write
+       to a customer's row when granting offers) means the anon key can still read/write
+       everyone's non-password data (offers, redeemed history, profiles). Properly isolating
+       that per-account requires real Supabase Auth + row ownership checks — ask if you want
+       that upgrade done.
+    ═══════════════════════════════════════════ */
+    const SUPABASE_URL = 'https://ukljfuxrjrugdmdjzuwn.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_-Bx10zEOvGwaHs181TA2PA_TQI-blfS';
+    const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    let DB_CACHE = {};   // in-memory mirror of the kv_store table
+    let dbReady = false;
+
+    async function loadAllData() {
+        const { data, error } = await sb.from('kv_store').select('key,value');
+        if (error) { console.error('Supabase load error:', error); return; }
+        DB_CACHE = {};
+        data.forEach(row => { DB_CACHE[row.key] = row.value; });
+        dbReady = true;
+    }
+
+    function kvGet(key, fallback) {
+        return DB_CACHE[key] !== undefined ? DB_CACHE[key] : fallback;
+    }
+
+    function kvSet(key, value) {
+        DB_CACHE[key] = value;
+        sb.from('kv_store').upsert({ key, value, updated_at: new Date().toISOString() })
+          .then(({ error }) => { if (error) console.error('Supabase save error:', error); });
+    }
+
+    function kvDelete(key) {
+        delete DB_CACHE[key];
+        sb.from('kv_store').delete().eq('key', key)
+          .then(({ error }) => { if (error) console.error('Supabase delete error:', error); });
+    }
+
     let currentUser = null;
     let selectedRole = 'customer';
     let selectedMerchantId = null;  // which merchant the customer is using
@@ -408,12 +711,12 @@
         chars = chars.map((c, i) => positions.includes(i) ? c : (Math.random() < 0.3 ? digits[Math.floor(Math.random()*digits.length)] : upper[Math.floor(Math.random()*upper.length)]));
         return chars.join('');
     }
-    function getUsers() { return JSON.parse(localStorage.getItem('mybook_users')) || {}; }
-    function saveUsers(u) { localStorage.setItem('mybook_users', JSON.stringify(u)); }
-    function getCustData(custId) { return JSON.parse(localStorage.getItem(`cust_${custId}`)) || {codes:{}, history:[]}; }
-    function saveCustData(custId, d) { localStorage.setItem(`cust_${custId}`, JSON.stringify(d)); }
-    function getMerchData(mId) { return JSON.parse(localStorage.getItem(`merch_${mId}`)) || {pin:null, redeemed:[]}; }
-    function saveMerchData(mId, d) { localStorage.setItem(`merch_${mId}`, JSON.stringify(d)); }
+    function getUsers() { return kvGet('users', {}); }
+    function saveUsers(u) { kvSet('users', u); }
+    function getCustData(custId) { return kvGet(`cust_${custId}`, {codes:{}, history:[]}); }
+    function saveCustData(custId, d) { kvSet(`cust_${custId}`, d); }
+    function getMerchData(mId) { return kvGet(`merch_${mId}`, {pin:null, redeemed:[]}); }
+    function saveMerchData(mId, d) { kvSet(`merch_${mId}`, d); }
     function allMerchants() {
         const u = getUsers();
         return Object.values(u).filter(x => x.role === 'merchant');
@@ -447,7 +750,7 @@
     }
 
     /* ── register ── */
-    function register() {
+    async function register() {
         const name  = document.getElementById('regName').value.trim();
         const phone = document.getElementById('regPhone').value.trim();
         const pass  = document.getElementById('regPass').value;
@@ -455,11 +758,13 @@
         if (!name||!phone||!pass||!passC) { flash('registerMsg','err','⚠️ All fields are required.'); return; }
         if (pass !== passC)               { flash('registerMsg','err','⚠️ Passwords do not match.'); return; }
         if (pass.length < 6)              { flash('registerMsg','err','⚠️ Password must be at least 6 characters.'); return; }
+        flash('registerMsg','ok','⏳ Please wait...');
+        await loadAllData();
         const users = getUsers();
         // allow same phone for different roles
         const userId = `${selectedRole}_${phone}`;
         if (users[userId]) { flash('registerMsg','err','⚠️ Account already exists.'); return; }
-        users[userId] = { id:userId, name, phone, password:pass, role:selectedRole, createdAt:new Date().toISOString() };
+        users[userId] = { id:userId, name, phone, password:hashPassword(pass), role:selectedRole, createdAt:new Date().toISOString() };
         saveUsers(users);
         flash('registerMsg','ok','✅ Account created! Please login.');
         setTimeout(()=>{
@@ -469,13 +774,20 @@
     }
 
     /* ── login ── */
-    function login() {
+    async function login() {
         const phone = document.getElementById('loginPhone').value.trim();
         const pass  = document.getElementById('loginPassword').value;
         if (!phone||!pass) { flash('loginMsg','err','⚠️ Enter phone and password.'); return; }
+        flash('loginMsg','ok','⏳ Please wait...');
+        await loadAllData();
         const users = getUsers();
-        const found = Object.values(users).find(u => u.phone===phone && u.password===pass);
+        const found = Object.values(users).find(u => u.phone===phone && checkPassword(pass, u.password));
         if (!found) { flash('loginMsg','err','❌ Phone or password is incorrect.'); return; }
+        if (!found.password.startsWith('$2')) {
+            // Silently upgrade legacy plaintext passwords to a hash the moment we see them.
+            found.password = hashPassword(pass);
+            saveUsers(users);
+        }
         currentUser = found.id;
         selectedRole = found.role;
         localStorage.setItem('mb_session', currentUser);
@@ -493,6 +805,39 @@
         document.getElementById('loginPage').classList.add('active');
     }
 
+    /* ── delete account ── */
+    function openDeleteModal() {
+        document.getElementById('delAccPassword').value = '';
+        document.getElementById('delAccMsg').innerHTML = '';
+        document.getElementById('deleteAccountModal').classList.add('show');
+    }
+    function closeDeleteModal() {
+        document.getElementById('deleteAccountModal').classList.remove('show');
+    }
+    async function confirmDeleteAccount() {
+        const pass = document.getElementById('delAccPassword').value;
+        if (!pass) { flash('delAccMsg','err','⚠️ Please enter your password.'); return; }
+
+        const users = getUsers();
+        const user = users[currentUser];
+        if (!user || !checkPassword(pass, user.password)) { flash('delAccMsg','err','❌ Incorrect password.'); return; }
+
+        flash('delAccMsg','ok','⏳ Deleting your account...');
+        const role = user.role;
+        const id = currentUser;
+
+        delete users[id];
+        saveUsers(users);
+
+        const dataKey = role === 'customer' ? `cust_${id}` : `merch_${id}`;
+        kvDelete(dataKey);
+
+        setTimeout(() => {
+            closeDeleteModal();
+            logout();
+        }, 600);
+    }
+
     /* ═══════════════ CUSTOMER ═══════════════ */
     function showCustomerPage() {
         document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -502,21 +847,32 @@
         switchMerchant();
     }
 
+    let selectedOfferId = null;
+
     function switchMerchant() {
         selectedMerchantId = null;
+        selectedOfferId = null;
         document.getElementById('custStep1').style.display='block';
         document.getElementById('custStep2').style.display='none';
-        document.getElementById('custPinSection').style.display='none';
-        document.getElementById('custPin').value='';
-        document.getElementById('custPinMsg').innerHTML='';
+        document.getElementById('offerDetailPanel').style.display='none';
+        document.getElementById('custOfferListSection').style.display='none';
         renderMerchantList();
-        custTab('custCodeTab',0);
     }
+
+    let allMerchantsCache = [];
 
     function renderMerchantList() {
         const merchants = allMerchants();
+        allMerchantsCache = merchants;
+        document.getElementById('merchantSearchWrap').style.display = 'block';
+        document.getElementById('merchantSearch').value = '';
+        renderFilteredMerchants(merchants);
+    }
+
+    function renderFilteredMerchants(merchants) {
         const div = document.getElementById('merchantList');
-        if (!merchants.length) { div.innerHTML='<div class="list-empty">No merchants registered yet.</div>'; return; }
+        if (!allMerchantsCache.length) { div.innerHTML='<div class="list-empty">No merchants registered yet.</div>'; return; }
+        if (!merchants.length) { div.innerHTML='<div class="list-empty">No merchants match your search.</div>'; return; }
         div.innerHTML = merchants.map(m => `
             <div class="merchant-option" id="mo_${m.id}" onclick="selectMerchant('${m.id}')">
                 <div>
@@ -527,37 +883,131 @@
             </div>`).join('');
     }
 
+    function filterMerchantList() {
+        const q = document.getElementById('merchantSearch').value.trim().toLowerCase();
+        const filtered = q ? allMerchantsCache.filter(m => m.name.toLowerCase().includes(q)) : allMerchantsCache;
+        renderFilteredMerchants(filtered);
+    }
+
     function selectMerchant(mId) {
         selectedMerchantId = mId;
         document.querySelectorAll('.merchant-option').forEach(el=>el.classList.remove('selected'));
         document.getElementById(`mo_${mId}`).classList.add('selected');
-        document.getElementById('custPinSection').style.display='block';
-        document.getElementById('custPin').value='';
-        document.getElementById('custPinMsg').innerHTML='';
+        const users = getUsers();
+        document.getElementById('offerListMerchantName').textContent = `🎁 Offers at ${users[mId] ? users[mId].name : ''}`;
+        document.getElementById('custOfferListSection').style.display='block';
+        renderOfferList(mId);
     }
 
-    function verifyMerchantPin() {
-        const pin = document.getElementById('custPin').value;
-        if (!pin||pin.length!==4||isNaN(pin)) { flash('custPinMsg','err','⚠️ Enter a 4-digit PIN.'); return; }
-        if (!selectedMerchantId) { flash('custPinMsg','err','⚠️ Please select a merchant first.'); return; }
+    function renderOfferList(mId) {
+        const md = getMerchData(mId);
+        const offers = md.offers || [];
+        const div = document.getElementById('custOfferList');
+        if (!offers.length) { div.innerHTML='<div class="list-empty">No offers available yet.</div>'; return; }
+        div.innerHTML = offers.map(o => `
+            <div class="offer-card" onclick="selectOfferForCustomer('${o.id}')">
+                <div class="oc-tag">${o.tag||'OFFER'}</div>
+                <div class="oc-title">${o.title}</div>
+                <div class="oc-desc">${o.desc}</div>
+            </div>`).join('');
+    }
+
+    function openAccountFromOffers() {
+        document.getElementById('custStep1').style.display='none';
+        document.getElementById('custStep2').style.display='block';
+        custTab('custCodeTab',0);
+    }
+
+    function selectOfferForCustomer(offerId) {
         const md = getMerchData(selectedMerchantId);
-        if (!md.pin) { flash('custPinMsg','err','❌ This merchant has not set a PIN yet.'); return; }
-        if (pin !== md.pin) { flash('custPinMsg','err','❌ Incorrect PIN.'); document.getElementById('custPin').value=''; return; }
+        const offer = (md.offers||[]).find(o=>o.id===offerId);
+        if (!offer) return;
+        selectedOfferId = offerId;
+        const users = getUsers();
+        const merchant = users[selectedMerchantId];
+        const mName = merchant ? merchant.name : '';
 
-        // Ensure customer has a code for this merchant
+        document.getElementById('odHeaderMerchant').textContent = mName;
+        document.getElementById('odMerchantLink').textContent = mName + ' ⌄';
+        document.getElementById('odLogo').innerHTML = md.logo
+            ? `<img src="${md.logo}" />`
+            : (mName||'M').charAt(0).toUpperCase();
+        document.getElementById('odTag').textContent = offer.tag || 'OFFER';
+        document.getElementById('odTitle').textContent = offer.title;
+        document.getElementById('odSave').textContent = offer.save ? `You will save ${offer.save}` : '';
+        document.getElementById('odDesc').textContent = offer.desc;
+        document.getElementById('odPinNote').textContent = `Please ask ${mName} to enter its PIN`;
+        document.getElementById('odValid').textContent = offer.validTill ? `Valid till ${offer.validTill}` : '';
+
+        const iconsRow = document.getElementById('odIconsRow');
+        let icons = '';
+        if (offer.dineIn) icons += '<span>🍽️ Dine-in</span>';
+        if (offer.takeaway) icons += '<span>🏬 Takeaway</span>';
+        iconsRow.innerHTML = icons;
+
+        // reset favorite state
         const cd = getCustData(currentUser);
-        cd.codes = cd.codes || {};
-        if (!cd.codes[selectedMerchantId]) {
-            cd.codes[selectedMerchantId] = { code: generateCode(), generatedTime: new Date().toISOString() };
-            saveCustData(currentUser, cd);
-        }
+        cd.favorites = cd.favorites || [];
+        const favIcon = document.getElementById('odFavIcon');
+        favIcon.textContent = cd.favorites.includes(offerId) ? '♥' : '♡';
 
-        flash('custPinMsg','ok','✅ PIN verified!');
-        setTimeout(()=>{
-            document.getElementById('custStep1').style.display='none';
-            document.getElementById('custStep2').style.display='block';
-            custTab('custCodeTab',0);
-        }, 700);
+        // redemptions remaining for this offer (defaults to 6/6 for a new customer/offer pair)
+        const ou = (cd.offerUses && cd.offerUses[selectedMerchantId] && cd.offerUses[selectedMerchantId][offerId]) || { total:6, used:0 };
+        document.getElementById('odRemaining').textContent = `${ou.total-ou.used}/${ou.total} redemptions left`;
+
+        // reset pin boxes
+        const boxes = document.querySelectorAll('.od-pin-box');
+        boxes.forEach(b=>b.value='');
+        document.getElementById('offerRedeemPin').value='';
+        document.getElementById('offerRedeemMsg').innerHTML='';
+        setupPinBoxes();
+
+        document.getElementById('custOfferListSection').style.display='none';
+        document.getElementById('offerDetailPanel').style.display='block';
+        boxes[0].focus();
+    }
+
+    function setupPinBoxes() {
+        const boxes = Array.from(document.querySelectorAll('.od-pin-box'));
+        boxes.forEach((box, i) => {
+            box.oninput = () => {
+                box.value = box.value.replace(/[^0-9]/g,'').slice(0,1);
+                if (box.value && i < boxes.length-1) boxes[i+1].focus();
+                document.getElementById('offerRedeemPin').value = boxes.map(b=>b.value).join('');
+            };
+            box.onkeydown = (e) => {
+                if (e.key==='Backspace' && !box.value && i>0) boxes[i-1].focus();
+            };
+        });
+    }
+
+    function backToOfferList() {
+        document.getElementById('offerDetailPanel').style.display='none';
+        document.getElementById('custOfferListSection').style.display='block';
+    }
+
+    function toggleFavorite() {
+        if (!selectedOfferId) return;
+        const cd = getCustData(currentUser);
+        cd.favorites = cd.favorites || [];
+        const idx = cd.favorites.indexOf(selectedOfferId);
+        const favIcon = document.getElementById('odFavIcon');
+        if (idx>-1) { cd.favorites.splice(idx,1); favIcon.textContent='♡'; }
+        else { cd.favorites.push(selectedOfferId); favIcon.textContent='♥'; }
+        saveCustData(currentUser, cd);
+    }
+
+    function shareOffer() {
+        const title = document.getElementById('odTitle').textContent;
+        const merchant = document.getElementById('odHeaderMerchant').textContent;
+        const text = `${title} offer at ${merchant} — check it out on MyBook!`;
+        if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
+        else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('Offer details copied to clipboard!')); }
+        else { alert(text); }
+    }
+
+    function reportIssue() {
+        alert('Thanks for letting us know — our team will look into this offer.');
     }
 
     function custTab(tabId, idx) {
@@ -567,6 +1017,65 @@
         document.querySelectorAll('#customerPage .tab-btn')[idx].classList.add('active');
         if (tabId==='custCodeTab') refreshCustCode();
         if (tabId==='custHistTab') refreshCustHistory();
+        if (tabId==='custProfileTab') refreshCustProfile();
+    }
+
+    function refreshCustProfile() {
+        const user = getUsers()[currentUser];
+        document.getElementById('custProfName').value = user.name || '';
+        document.getElementById('custProfPhone').value = user.phone || '';
+        refreshCustAvatar();
+    }
+
+    let pendingCustAvatarDataUrl = null;
+
+    function refreshCustAvatar() {
+        const cd = getCustData(currentUser);
+        const preview = document.getElementById('custAvatarPreview');
+        pendingCustAvatarDataUrl = null;
+        preview.innerHTML = cd.avatar ? `<img src="${cd.avatar}" />` : '👤';
+    }
+
+    function previewCustAvatar() {
+        const file = document.getElementById('custAvatarFile').files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            pendingCustAvatarDataUrl = e.target.result;
+            document.getElementById('custAvatarPreview').innerHTML = `<img src="${pendingCustAvatarDataUrl}" />`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function saveCustAvatar() {
+        if (!pendingCustAvatarDataUrl) { flash('custAvatarMsg','err','⚠️ Choose an image file first.'); return; }
+        const cd = getCustData(currentUser);
+        cd.avatar = pendingCustAvatarDataUrl;
+        saveCustData(currentUser, cd);
+        flash('custAvatarMsg','ok','✅ Photo saved!', 3000);
+        document.getElementById('custAvatarFile').value='';
+        pendingCustAvatarDataUrl = null;
+    }
+
+    function removeCustAvatar() {
+        const cd = getCustData(currentUser);
+        delete cd.avatar;
+        saveCustData(currentUser, cd);
+        document.getElementById('custAvatarFile').value='';
+        refreshCustAvatar();
+        flash('custAvatarMsg','ok','✅ Photo removed.', 2500);
+    }
+
+    function saveCustProfile() {
+        const name = document.getElementById('custProfName').value.trim();
+        const phone = document.getElementById('custProfPhone').value.trim();
+        if (!name || !phone) { flash('custProfileMsg','err','⚠️ Name and phone number are required.'); return; }
+        const users = getUsers();
+        users[currentUser].name = name;
+        users[currentUser].phone = phone;
+        saveUsers(users);
+        document.getElementById('custWelcome').textContent = `Welcome, ${name}!`;
+        flash('custProfileMsg','ok','✅ Profile updated!', 3000);
     }
 
     function refreshCustCode() {
@@ -584,36 +1093,117 @@
         }
     }
 
-    function refreshCustHistory() {
-        const cd = getCustData(currentUser);
-        const hist = (cd.history||[]).filter(h=>h.merchantId===selectedMerchantId);
-        const users = getUsers();
-        const div = document.getElementById('custHistory');
-        if (!hist.length) { div.innerHTML='<div class="list-empty">No codes redeemed with this merchant yet.</div>'; return; }
-        div.innerHTML = hist.map(h=>`
-            <div class="r-item">
-                <div><span class="r-code">${h.code}</span><span class="r-badge">✓ Redeemed</span></div>
-                <div class="r-meta"><span>${new Date(h.time).toLocaleString()}</span></div>
-            </div>`).join('');
+    function formatDateDMY(iso) {
+        const dt = new Date(iso);
+        const dd = String(dt.getDate()).padStart(2,'0');
+        const mm = String(dt.getMonth()+1).padStart(2,'0');
+        return `${dd}/${mm}/${dt.getFullYear()}`;
     }
 
-    function redeemCode() {
-        const pin = document.getElementById('redeemPin').value;
-        if (!pin) { flash('redeemMsg','err','⚠️ Enter PIN to confirm.'); return; }
+    function badgeStyle(tag) {
+        const t = (tag||'').toUpperCase();
+        if (t.includes('B1G1') || t.includes('BUY 1')) return { bg:'#ffb300', label: tag || 'B1G1 FREE' };
+        if (t.includes('DISCOUNT') || t.includes('%') || t.includes('OFF'))  return { bg:'#ef5350', label: tag || 'AMOUNT DISCOUNT' };
+        if (t.includes('BUNDLE') || t.includes('BUNDLED'))                  return { bg:'#29b6f6', label: tag || 'BUNDLED DEAL' };
+        return { bg:'#9c27b0', label: tag || 'OFFER' };
+    }
+
+    // Full "My Redemptions" history — across ALL merchants, grouped by date (like the app's history screen)
+    function refreshCustHistory() {
+        const cd = getCustData(currentUser);
+        const hist = (cd.history||[]).slice();
+        const div = document.getElementById('custHistory');
+        if (!hist.length) { div.innerHTML='<div class="list-empty">No codes redeemed yet.</div>'; return; }
+
+        const users = getUsers();
+        const groups = {};
+        const order = [];
+        hist.forEach(h => {
+            const key = formatDateDMY(h.time);
+            if (!groups[key]) { groups[key]=[]; order.push(key); }
+            groups[key].push(h);
+        });
+
+        div.innerHTML = order.map(dateKey => {
+            const cards = groups[dateKey].map(h => {
+                const merchant = users[h.merchantId];
+                const md = getMerchData(h.merchantId);
+                const badge = badgeStyle(h.offerTag);
+                const logo = md.logo ? `<img src="${md.logo}" />` : ((merchant?merchant.name:'?').charAt(0).toUpperCase());
+                const title = h.offerTitle ? `${h.code} - ${h.offerTitle}` : h.code;
+                const sub = merchant ? (md.location ? `${merchant.name} - ${md.location}` : merchant.name) : '';
+                return `
+                <div class="redemption-card">
+                    <div class="rc-logo">${logo}</div>
+                    <div class="rc-body">
+                        <div class="rc-title"><span class="rc-code">${h.code}</span>${h.offerTitle?` - ${h.offerTitle}`:''}</div>
+                        <div><span class="rc-badge" style="background:${badge.bg};">${badge.label}</span></div>
+                        <div class="rc-sub">${sub}</div>
+                    </div>
+                    <div class="rc-share" onclick="shareHistoryItem('${h.code}','${(merchant?merchant.name:'').replace(/'/g,"")}')">↗<span>Share</span></div>
+                </div>`;
+            }).join('');
+            return `<div class="hist-date-header">Redeemed on ${dateKey}</div>${cards}`;
+        }).join('');
+    }
+
+    function shareHistoryItem(code, merchantName) {
+        const text = `My redeemed code ${code} at ${merchantName} — check it out on MyBook!`;
+        if (navigator.share) { navigator.share({ text }).catch(()=>{}); }
+        else if (navigator.clipboard) { navigator.clipboard.writeText(text).then(()=>alert('Redemption details copied to clipboard!')); }
+        else { alert(text); }
+    }
+
+    function redeemCode(pinFieldId, msgFieldId) {
+        pinFieldId = pinFieldId || 'redeemPin';
+        msgFieldId = msgFieldId || 'redeemMsg';
+        const pin = document.getElementById(pinFieldId).value;
+        if (!pin || pin.length!==4) { flash(msgFieldId,'err','⚠️ Enter the merchant\'s 4-digit PIN to confirm.'); return; }
         const md = getMerchData(selectedMerchantId);
-        if (pin !== md.pin) { flash('redeemMsg','err','❌ Incorrect PIN.'); document.getElementById('redeemPin').value=''; return; }
+        if (!md.pin) { flash(msgFieldId,'err','❌ This merchant has not set a PIN yet.'); return; }
+        if (pin !== md.pin) {
+            flash(msgFieldId,'err','❌ Incorrect PIN.');
+            document.getElementById(pinFieldId).value='';
+            if (pinFieldId==='offerRedeemPin') { document.querySelectorAll('.od-pin-box').forEach(b=>b.value=''); document.querySelectorAll('.od-pin-box')[0].focus(); }
+            return;
+        }
 
         const cd = getCustData(currentUser);
+
+        // Per-offer redemption limit (defaults to 6/6 for a new customer/offer pair)
+        let offerEntry = null;
+        if (pinFieldId==='offerRedeemPin' && selectedOfferId) {
+            cd.offerUses = cd.offerUses || {};
+            cd.offerUses[selectedMerchantId] = cd.offerUses[selectedMerchantId] || {};
+            offerEntry = cd.offerUses[selectedMerchantId][selectedOfferId];
+            if (!offerEntry) {
+                offerEntry = { total:6, used:0 };
+                cd.offerUses[selectedMerchantId][selectedOfferId] = offerEntry;
+            }
+            if (offerEntry.used >= offerEntry.total) {
+                flash(msgFieldId,'err',`❌ You've used all your redemptions (${offerEntry.total}/${offerEntry.total}) for this offer. Ask the merchant to grant you more.`);
+                document.getElementById(pinFieldId).value='';
+                document.querySelectorAll('.od-pin-box').forEach(b=>b.value='');
+                return;
+            }
+        }
+
         cd.codes = cd.codes||{};
         const oldCode = (cd.codes[selectedMerchantId]||{}).code || generateCode();
 
+        // Look up offer details (if this redemption came from an offer) for richer history display
+        const redeemedOffer = (pinFieldId==='offerRedeemPin' && selectedOfferId) ? (md.offers||[]).find(o=>o.id===selectedOfferId) : null;
+        const offerTitle = redeemedOffer ? redeemedOffer.title : null;
+        const offerTag = redeemedOffer ? redeemedOffer.tag : null;
+
         // Save to customer history
         cd.history = cd.history||[];
-        cd.history.unshift({ code:oldCode, merchantId:selectedMerchantId, time:new Date().toISOString() });
+        cd.history.unshift({ code:oldCode, merchantId:selectedMerchantId, time:new Date().toISOString(), offerId:selectedOfferId||null, offerTitle, offerTag });
         if (cd.history.length>100) cd.history=cd.history.slice(0,100);
 
         // New code
         cd.codes[selectedMerchantId] = { code:generateCode(), generatedTime:new Date().toISOString() };
+        if (offerEntry) offerEntry.used += 1;
         saveCustData(currentUser, cd);
 
         // Log in merchant's redeemed list
@@ -621,13 +1211,20 @@
         const custName = users[currentUser].name;
         const custPhone = users[currentUser].phone;
         md.redeemed = md.redeemed||[];
-        md.redeemed.unshift({ code:oldCode, customerName:custName, customerPhone:custPhone, time:new Date().toISOString() });
+        md.redeemed.unshift({ code:oldCode, customerId:currentUser, customerName:custName, customerPhone:custPhone, offerId:selectedOfferId||null, offerTitle:offerTitle, time:new Date().toISOString() });
         if (md.redeemed.length>500) md.redeemed=md.redeemed.slice(0,500);
         saveMerchData(selectedMerchantId, md);
 
         refreshCustCode();
-        document.getElementById('redeemPin').value='';
-        document.getElementById('redeemMsg').innerHTML='';
+        document.getElementById(pinFieldId).value='';
+        if (pinFieldId==='offerRedeemPin') {
+            document.querySelectorAll('.od-pin-box').forEach(b=>b.value='');
+            if (offerEntry) {
+                const remEl = document.getElementById('odRemaining');
+                if (remEl) remEl.textContent = `${offerEntry.total-offerEntry.used}/${offerEntry.total} redemptions left`;
+            }
+        }
+        document.getElementById(msgFieldId).innerHTML='';
         // Show success popup
         document.getElementById('popupCode').textContent = oldCode;
         document.getElementById('successPopup').classList.add('show');
@@ -643,8 +1240,8 @@
         if (!oldP||!newP) { flash('changePassMsg','err','⚠️ Both fields are required.'); return; }
         if (newP.length<6) { flash('changePassMsg','err','⚠️ New password must be at least 6 characters.'); return; }
         const users = getUsers();
-        if (users[currentUser].password!==oldP) { flash('changePassMsg','err','❌ Current password is incorrect.'); return; }
-        users[currentUser].password=newP;
+        if (!checkPassword(oldP, users[currentUser].password)) { flash('changePassMsg','err','❌ Current password is incorrect.'); return; }
+        users[currentUser].password=hashPassword(newP);
         saveUsers(users);
         flash('changePassMsg','ok','✅ Password changed successfully!', 3000);
         document.getElementById('oldPass').value='';
@@ -659,6 +1256,46 @@
         document.getElementById('merchWelcome').textContent=`Welcome, ${user.name}!`;
         merchTab('mPinTab',0);
         updateMerchStats();
+        refreshMerchLogo();
+    }
+
+    let pendingLogoDataUrl = null;
+
+    function refreshMerchLogo() {
+        const md = getMerchData(currentUser);
+        const preview = document.getElementById('mLogoPreview');
+        pendingLogoDataUrl = null;
+        preview.innerHTML = md.logo ? `<img src="${md.logo}" />` : '🏪';
+    }
+
+    function previewMerchantLogo() {
+        const file = document.getElementById('mLogoFile').files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            pendingLogoDataUrl = e.target.result;
+            document.getElementById('mLogoPreview').innerHTML = `<img src="${pendingLogoDataUrl}" />`;
+        };
+        reader.readAsDataURL(file);
+    }
+
+    function saveMerchantLogo() {
+        if (!pendingLogoDataUrl) { flash('mLogoMsg','err','⚠️ Choose an image file first.'); return; }
+        const md = getMerchData(currentUser);
+        md.logo = pendingLogoDataUrl;
+        saveMerchData(currentUser, md);
+        flash('mLogoMsg','ok','✅ Logo saved! Customers will now see it on your offers.', 3000);
+        document.getElementById('mLogoFile').value='';
+        pendingLogoDataUrl = null;
+    }
+
+    function removeMerchantLogo() {
+        const md = getMerchData(currentUser);
+        delete md.logo;
+        saveMerchData(currentUser, md);
+        document.getElementById('mLogoFile').value='';
+        refreshMerchLogo();
+        flash('mLogoMsg','ok','✅ Logo removed.', 2500);
     }
 
     function merchTab(tabId, idx) {
@@ -667,8 +1304,111 @@
         document.getElementById(tabId).classList.add('active');
         document.querySelectorAll('#merchantPage .tab-btn')[idx].classList.add('active');
         if (tabId==='mPinTab') refreshMerchPin();
+        if (tabId==='mOffersTab') refreshMerchOffers();
         if (tabId==='mCodesTab') refreshMerchCodes();
+        if (tabId==='mProfileTab') refreshMerchProfile();
         updateMerchStats();
+    }
+
+    function refreshMerchProfile() {
+        const user = getUsers()[currentUser];
+        const md = getMerchData(currentUser);
+        document.getElementById('mProfName').value = user.name || '';
+        document.getElementById('mProfPhone').value = user.phone || '';
+        document.getElementById('mProfLocation').value = md.location || '';
+    }
+
+    function saveMerchProfile() {
+        const name = document.getElementById('mProfName').value.trim();
+        const phone = document.getElementById('mProfPhone').value.trim();
+        const location = document.getElementById('mProfLocation').value.trim();
+        if (!name || !phone) { flash('mProfileMsg','err','⚠️ Store name and phone number are required.'); return; }
+        const users = getUsers();
+        users[currentUser].name = name;
+        users[currentUser].phone = phone;
+        saveUsers(users);
+        const md = getMerchData(currentUser);
+        md.location = location;
+        saveMerchData(currentUser, md);
+        document.getElementById('merchWelcome').textContent = `Welcome, ${name}!`;
+        flash('mProfileMsg','ok','✅ Store details updated!', 3000);
+    }
+
+    function changeMerchantPassword() {
+        const oldP = document.getElementById('mOldPass').value;
+        const newP = document.getElementById('mNewPass').value;
+        if (!oldP||!newP) { flash('mChangePassMsg','err','⚠️ Both fields are required.'); return; }
+        if (newP.length<6) { flash('mChangePassMsg','err','⚠️ New password must be at least 6 characters.'); return; }
+        const users = getUsers();
+        if (!checkPassword(oldP, users[currentUser].password)) { flash('mChangePassMsg','err','❌ Current password is incorrect.'); return; }
+        users[currentUser].password=hashPassword(newP);
+        saveUsers(users);
+        flash('mChangePassMsg','ok','✅ Password changed successfully!', 3000);
+        document.getElementById('mOldPass').value='';
+        document.getElementById('mNewPass').value='';
+    }
+
+    /* ── Offer presets ── */
+    const OFFER_PRESETS = {
+        sandwich: { title:'Sandwich', tag:'B1G1 FREE', desc:'Buy 1 sandwich and get 1 sandwich for free' },
+        hot:      { title:'Hot Beverage (Medium size)', tag:'B1G1 FREE', desc:'Buy 1 hot beverage (medium size) and get 1 hot beverage (medium size) free' },
+        cold:     { title:'Cold Beverage (Medium size)', tag:'B1G1 FREE', desc:'Buy 1 cold beverage (medium size) and get 1 cold beverage (medium size) free' },
+        custom:   { title:'', tag:'OFFER', desc:'' }
+    };
+
+    function pickOfferType(type, btn) {
+        document.querySelectorAll('#offerTypeRow .offer-type-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        const preset = OFFER_PRESETS[type];
+        document.getElementById('offTitle').value = preset.title;
+        document.getElementById('offTag').value = preset.tag;
+        document.getElementById('offDesc').value = preset.desc;
+    }
+
+    function submitOffer() {
+        const title = document.getElementById('offTitle').value.trim();
+        const tag = document.getElementById('offTag').value.trim() || 'OFFER';
+        const desc = document.getElementById('offDesc').value.trim();
+        const save = document.getElementById('offSave').value.trim();
+        const validTill = document.getElementById('offValid').value;
+        const dineIn = document.getElementById('offDineIn').checked;
+        const takeaway = document.getElementById('offTakeaway').checked;
+        if (!title || !desc) { flash('offerMsg','err','⚠️ Please fill in the offer title and description.'); return; }
+
+        const md = getMerchData(currentUser);
+        md.offers = md.offers || [];
+        md.offers.push({ id: uid(), title, tag, desc, save, validTill, dineIn, takeaway });
+        saveMerchData(currentUser, md);
+
+        flash('offerMsg','ok','✅ Offer added!', 2500);
+        document.getElementById('offTitle').value='';
+        document.getElementById('offTag').value='';
+        document.getElementById('offDesc').value='';
+        document.getElementById('offSave').value='';
+        document.getElementById('offValid').value='';
+        refreshMerchOffers();
+    }
+
+    function deleteOffer(offerId) {
+        const md = getMerchData(currentUser);
+        md.offers = (md.offers||[]).filter(o=>o.id!==offerId);
+        saveMerchData(currentUser, md);
+        refreshMerchOffers();
+    }
+
+    function refreshMerchOffers() {
+        const md = getMerchData(currentUser);
+        const offers = md.offers || [];
+        const div = document.getElementById('mOffersList');
+        if (!offers.length) { div.innerHTML='<div class="list-empty">No offers added yet.</div>'; return; }
+        div.innerHTML = offers.map(o => `
+            <div class="offer-manage-item">
+                <div>
+                    <div class="om-title">${o.title}</div>
+                    <div class="om-sub">${o.tag||''} · ${o.desc}</div>
+                </div>
+                <button class="offer-del-btn" onclick="deleteOffer('${o.id}')">✕ Remove</button>
+            </div>`).join('');
     }
 
     function refreshMerchPin() {
@@ -704,19 +1444,61 @@
         const md = getMerchData(currentUser);
         const list = document.getElementById('mRedeemedList');
         const redeemed = md.redeemed||[];
-        if (!redeemed.length) { list.innerHTML='<div class="list-empty">No codes redeemed at your store yet.</div>'; return; }
-        list.innerHTML = redeemed.map(r=>`
-            <div class="r-item">
-                <div><span class="r-code">${r.code}</span><span class="r-badge">✓ Redeemed</span></div>
-                <div class="r-meta">
-                    <span>👤 ${r.customerName} (${r.customerPhone})</span>
-                    <span>${new Date(r.time).toLocaleString()}</span>
-                </div>
-            </div>`).join('');
+        if (!redeemed.length) { list.innerHTML='<div class="list-empty">No codes redeemed at your store yet.</div>'; }
+        else {
+            list.innerHTML = redeemed.map(r=>`
+                <div class="r-item">
+                    <div><span class="r-code">${r.code}</span><span class="r-badge">✓ Redeemed</span>${r.offerTitle?` <span class="r-badge" style="background:#e3f2fd;color:#1976d2;border-color:#90caf9;">${r.offerTitle}</span>`:''}</div>
+                    <div class="r-meta">
+                        <span>👤 ${r.customerName} (${r.customerPhone})</span>
+                        <span>${new Date(r.time).toLocaleString()}</span>
+                    </div>
+                </div>`).join('');
+        }
+        populateGrantForm();
+    }
+
+    function populateGrantForm() {
+        const md = getMerchData(currentUser);
+        const custSel = document.getElementById('grantCustomer');
+        const offSel = document.getElementById('grantOffer');
+
+        const customersMap = {};
+        (md.redeemed||[]).forEach(r => { if (r.customerId) customersMap[r.customerId] = r.customerName; });
+        const custIds = Object.keys(customersMap);
+        custSel.innerHTML = custIds.length
+            ? custIds.map(id => `<option value="${id}">${customersMap[id]}</option>`).join('')
+            : '<option value="">— No customers yet —</option>';
+
+        const offers = md.offers || [];
+        offSel.innerHTML = offers.length
+            ? offers.map(o => `<option value="${o.id}">${o.title}</option>`).join('')
+            : '<option value="">— No offers yet —</option>';
+    }
+
+    function grantOfferCodes() {
+        const custId = document.getElementById('grantCustomer').value;
+        const offerId = document.getElementById('grantOffer').value;
+        const amount = parseInt(document.getElementById('grantAmount').value, 10);
+        if (!custId) { flash('grantMsg','err','⚠️ Select a customer — only customers who have redeemed with you before can be granted more.'); return; }
+        if (!offerId) { flash('grantMsg','err','⚠️ Select an offer.'); return; }
+        if (!amount || amount<1) { flash('grantMsg','err','⚠️ Enter a valid number of redemptions.'); return; }
+
+        const cd = getCustData(custId);
+        cd.offerUses = cd.offerUses || {};
+        cd.offerUses[currentUser] = cd.offerUses[currentUser] || {};
+        cd.offerUses[currentUser][offerId] = { total: amount, used: 0 };
+        saveCustData(custId, cd);
+
+        const users = getUsers();
+        flash('grantMsg','ok',`✅ Granted ${amount}/${amount} redemptions to ${users[custId]?users[custId].name:'customer'} for this offer.`, 4000);
     }
 
     /* ── auto session ── */
-    window.addEventListener('load', () => {
+    window.addEventListener('load', async () => {
+        flash('loginMsg','ok','⏳ Connecting...');
+        await loadAllData();
+        document.getElementById('loginMsg').innerHTML = '';
         const s = localStorage.getItem('mb_session');
         if (s) {
             const u = getUsers()[s];
